@@ -1,0 +1,20 @@
+svg#detail .axis line,
+svg#detail .axis path {
+  shape-rendering: crispEdges;
+  fill: transparent;
+  stroke: #555;
+}
+svg#detail .axis text {
+  font-size: 11px;
+}
+
+
+svg#detail .bar {
+  fill-opacity: 0.5;
+}
+svg#detail .bar.left {
+  fill: steelblue;
+}
+svg#detail .bar.right {
+  fill: firebrick;
+}

@@ -1,0 +1,11 @@
+svg#main path {
+	stroke: grey;
+	stroke-width: 1px;
+	fill: white;
+	cursor: pointer;
+}
+
+svg#main path:hover{
+	opacity: 0.5;
+}
+

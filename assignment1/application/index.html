@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+		
+		<link rel="stylesheet" href="/css/main.css">
+		<link rel="stylesheet" href="/css/detail.css">
+		
+		<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="http://d3js.org/queue.v1.min.js"></script>
+		<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+		<script src="/js/detailview.js"></script>
+		<script src="/js/main.js"></script>
+	</head>
+	<body class="container">
+		<header class="page-header">
+			<h1>Demographics explorer</h1>
+		</header>
+		<div class="row">
+			<div id="mainContainer" class="col-md-6">
+				<svg id="main">
+				</svg>
+			</div>
+			<div id="detailContainer" class="col-md-6">
+				<p class="detailExplanation text-center text-info">Click on a muncipality to explore the demographic</p>
+				<svg id="detail">
+				</svg>
+			</div>
+		</div>
+	</body>
+</html>
+
