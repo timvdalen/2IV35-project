@@ -108,6 +108,9 @@
 	
 	/**
 	 * Parses a JSON representation of a Province and its Municipalities
+	 * 
+	 * @param data JSON representation of a Province and its Municipalities
+	 * @return Province The Province
 	 */
 	scope.Province.fromJSON = function (data) {
 		var municipalities, i;
