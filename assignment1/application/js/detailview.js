@@ -1,6 +1,49 @@
 /*global $,d3*/
 (function (scope) {
 	'use strict';
+	var groups = [
+		{
+			label: '0-9',
+			data: ["P_00_04_JR", "P_05_09_JR"]
+		},
+		{
+			label: '10-19',
+			data: ["P_10_14_JR", "P_15_19_JR"]
+		},
+		{
+			label: '20-29',
+			data: ["P_20_24_JR", "P_25_29_JR"]
+		},
+		{
+			label: '30-39',
+			data: ["P_30_34_JR", "P_35_39_JR"]
+		},
+		{
+			label: '40-49',
+			data: ["P_40_44_JR", "P_45_49_JR"]
+		},
+		{
+			label: '50-59',
+			data: ["P_50_54_JR", "P_55_59_JR"]
+		},
+		{
+			label: '60-69',
+			data: ["P_60_65_JR", "P_65_69_JR"]
+		},
+		{
+			label: '70-79',
+			data: ["P_70_74_JR", "P_75_79_JR"]
+		},
+		{
+			label: '80-89',
+			data: ["P_80_84_JR", "P_85_89_JR"]
+		},
+		{
+			label: '90+',
+			data: ["P_90_94_JR", "P_95_EO_JR"]
+		}
+	];
+
 	function translation(x, y) {
 		return 'translate(' + x + ',' + y + ')';
 	}
@@ -15,26 +58,22 @@
 	}
 
 	
-	function dataFromCityCode(code) {
-		var i;
-		for (i = 0; i < scope.data.length; i += 1) {
-			if (scope.data[i].gm_code === code) {
-				return [
-					{group: '0-14', male: aant(scope.data[i], "00_14", true), female: aant(scope.data[i], "00_14", false)},
-					{group: '15-24', male: aant(scope.data[i], "15_24", true), female: aant(scope.data[i], "15_24", false)},
-					{group: '25-44', male: aant(scope.data[i], "25_44", true), female: aant(scope.data[i], "25_44", false)},
-					{group: '45-64', male: aant(scope.data[i], "45_64", true), female: aant(scope.data[i], "45_64", false)},
-					{group: '64+', male: aant(scope.data[i], "65_eo", true), female: aant(scope.data[i], "65_eo", false)}
-				];
+	function dataFromMunicipality(municipality) {
+		var data = [], i, j, pop;
+
+		for (i = 0; i < groups.length; i += 1) {
+			pop = 0;
+			for (j = 0; j < groups[i].data.length; j += 1) {
+				pop += parseInt(municipality.getProperty(groups[i].data[j]), 10);
 			}
+			data.push({
+				group: groups[i].label,
+				male: pop,
+				female: pop
+			});
 		}
-		return [
-			{group: '0-14', male: 0, female: 0},
-			{group: '15-24', male: 0, female: 0},
-			{group: '25-44', male: 0, female: 0},
-			{group: '45-64', male: 0, female: 0},
-			{group: '64+', male: 0, female: 0}
-		];
+
+		return data;
 	}
 	
 	$(function () {
@@ -59,12 +98,13 @@
 		pointA = regionWidth;
 		pointB = w - regionWidth;
 
-		scope.showDetail = function (code) {
+		scope.showDetail = function (municipality) {
 			var data, totalPopulation, percentage, svg, maxValue, xScale, xScaleLeft, xScaleRight, yScale, yAxisLeft, yAxisRight, xAxisRight, xAxisLeft, leftBarGroup, rightBarGroup;
 
 			$("#detail").empty();
+			$(".detailExplanation").hide();
 		
-			data = dataFromCityCode(code);
+			data = dataFromMunicipality(municipality);
 
 			// GET THE TOTAL POPULATION SIZE AND CREATE A FUNCTION FOR RETURNING THE PERCENTAGE
 			totalPopulation = d3.sum(data, function (d) { return d.male + d.female; });
