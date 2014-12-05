@@ -9,3 +9,12 @@ svg#main path:hover{
 	opacity: 0.5;
 }
 
+.legend{
+	display: flex;
+	align-items: center;
+}
+
+.legendBar{
+	height: 50px;
+	border: 1px solid black;
+}

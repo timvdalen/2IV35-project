@@ -30,13 +30,23 @@
 
 		g = svg.append("g");
 
+		function calculateLegend() {
+			var values, minValue, maxValue;
+			values = scope.Province.getValues(provinces);
+			minValue = d3.min(values);
+			maxValue = d3.max(values);
+			linearColorScale.domain([minValue, maxValue]);
+			$(".legendBar").css('background', '-webkit-linear-gradient(left, ' + linearColorScale(minValue) + ', ' + linearColorScale(maxValue) + ')');
+			$("#legendMin").text(parseInt(minValue, 10));
+			$("#legendMax").text(parseInt(maxValue, 10));
+		}
+
 		function refreshData() {
 			//Clean up
 			g.selectAll("path").remove();
 
 			//Calculate color scale
-			var values = scope.Province.getValues(provinces);
-			linearColorScale.domain([d3.min(values), d3.max(values)]);
+			calculateLegend();
 
 			//Add data
 			g.selectAll("path")
