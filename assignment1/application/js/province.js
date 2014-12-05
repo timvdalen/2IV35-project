@@ -18,7 +18,18 @@
 			///Bool Whether or not this municipality is expanded
 			expanded,
 			///Feature The GeoJSON feature that represents the province on a map
-			feature;
+			feature,
+			///Province Reference to the current Province
+			that = this;
+
+		/**
+		 * Gets the name of the Province
+		 *
+		 * @return String The name of the Province
+		 */
+		this.getName = function () {
+			return name;
+		};
 		
 		/**
 		 * Expands or contracts this province
@@ -54,7 +65,7 @@
 		 * @return Float The value
 		 */
 		this.getValue = function () {
-			var total, i;
+			var total = 0, i;
 			
 			for (i = 0; i < municipalities.length; i += 1) {
 				total += municipalities[i].getValue();
@@ -68,6 +79,7 @@
 			name = _name;
 			municipalities = _municipalities;
 			feature = _feature;
+			feature.parent = that;
 			
 			expanded = false;
 		}());
@@ -82,9 +94,9 @@
 	 * @return FeatureCollection Collection containing data for all the provinces
 	 */
 	scope.Province.getCollection = function (provinces) {
-		var features, i;
+		var features = [], i;
 		for (i = 0; i < provinces.length; i += 1) {
-			features.push(provinces[i].getFeatures());
+			features.push.apply(features, provinces[i].getFeatures());
 		}
 		
 		return {
@@ -99,7 +111,7 @@
 	 * @return Array[Float] All values
 	 */
 	scope.Province.getValues = function (provinces) {
-		var ret, i;
+		var ret = [], i;
 		for (i = 0; i < provinces.length; i += 1) {
 			ret.push(provinces[i].getValue());
 		}
@@ -113,7 +125,7 @@
 	 * @return Province The Province
 	 */
 	scope.Province.fromJSON = function (data) {
-		var municipalities, i;
+		var municipalities = [], i;
 		
 		for (i = 0; i < data.municipalities.length; i += 1) {
 			municipalities.push(scope.Municipality.fromJSON(data.municipalities[i]));
