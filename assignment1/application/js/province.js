@@ -65,21 +65,27 @@
 		 * @return Float The value
 		 */
 		this.getValue = function () {
-			var total = 0, ret = [], i;
-			if (expanded) {
-				//The province is expanded, return all individual values
-				for (i = 0; i < municipalities.length; i += 1) {
-					ret.push(municipalities[i].getValue());
-				}
-				return ret;
-			} else {
-				//The province is not expanded, return the avg of the values
-				for (i = 0; i < municipalities.length; i += 1) {
-					total += municipalities[i].getValue();
-				}
-
-				return [(total / municipalities.length)];
+			var total = 0, i;
+			//The province is not expanded, return the avg of the values
+			for (i = 0; i < municipalities.length; i += 1) {
+				total += municipalities[i].getValue();
 			}
+
+			return (total / municipalities.length);
+		};
+
+		/**
+		 * Gets all values in the province, for min-max calculation
+		 *
+		 * @return Array[Float] All values
+		 */
+		this.getValues = function () {
+			var ret = [], i;
+			//The province is expanded, return all individual values
+			for (i = 0; i < municipalities.length; i += 1) {
+				ret.push(municipalities[i].getValue());
+			}
+			return ret;
 		};
 		
 		//Constructor
@@ -121,7 +127,7 @@
 	scope.Province.getValues = function (provinces) {
 		var ret = [], i;
 		for (i = 0; i < provinces.length; i += 1) {
-			ret.push.apply(ret, provinces[i].getValue());
+			ret.push.apply(ret, provinces[i].getValues());
 		}
 		return ret;
 	};

@@ -45,9 +45,6 @@
 			//Clean up
 			g.selectAll("path").remove();
 
-			//Calculate color scale
-			calculateLegend();
-
 			//Add data
 			g.selectAll("path")
 				.data(scope.Province.getCollection(provinces).features).enter()
@@ -79,6 +76,10 @@
 			for (i = 0; i < mapData.length; i += 1) {
 				provinces.push(scope.Province.fromJSON(mapData[i]));
 			}
+
+			//Calculate color scale
+			calculateLegend();
+
 			refreshData();
 		}
 
