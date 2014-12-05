@@ -29,9 +29,8 @@ fixProvince(utr,'tmp/utrecht_unmerged.json')
 function fixProvince(province,province_naam){
 var arr = province.gmcodes
 wstream = fs.createWriteStream(province_naam);
-wstream.write('{ \n "type": "FeatureCollection", \n "features": [ \n')
-hippeshit2(arr,polys.features)
-wstream.write(' ] \n } ')
+wstream.write('[ \n ')
+wstream.write(' ] \n  ')
 wstream.end();
 }
 function hippeshit(gmcode,features,bool){
