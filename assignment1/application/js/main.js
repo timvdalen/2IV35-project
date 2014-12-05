@@ -30,32 +30,38 @@
 		var g = svg.append("g");
 
 		function dataLoaded(error, mapData) {
-			scope.data = mapData.features;
-			linearColorScale.domain([d3.min(cityData.values()), d3.max(cityData.values())]);
+			var provinces = [], i, values;
+			for (i = 0; i < mapData.length; i += 1) {
+				provinces.push(Province.fromJSON(mapData[i]));
+			}
+
+			scope.data = Province.getCollection(provinces).features;
+
+			values = Province.getValues(provinces);
+
+			linearColorScale.domain([d3.min(values), d3.max(values)]);
 			g.selectAll("path")
-				.data(mapData.features).enter()
+				.data(scope.data).enter()
 				.append("path")
 				.attr("d", path)
 				.style("fill", function(d) {
-					return linearColorScale(cityData.get(d.gm_code));
+					return linearColorScale(d.parent.getValue());
 				})
 				.each(function(d, i){
+					/*
 					$(this).data('id', d.gm_code);
 					$(this).on('click', function(e){
 						$(".detailExplanation").hide();
 						showDetail($(this).data('id'));
-					});
+					});*/
 				})
 				.append("title").text(function(d) {
-					return d.gm_naam + ": " + parseInt(cityData.get(d.gm_code)) + "% 50 jaar of ouder";
+					return d.parent.getName() + ": " + parseInt(d.parent.getValue()) + "% 50 jaar of ouder";
 				});
 		}
 
 		queue()
-			.defer(d3.json, "/res/cities-geometry.json")
-			.defer(d3.tsv, "/res/cities-data.txt", function(d) {
-				cityData.set(d.Code, parseFloat(d.P_50_54_JR) + parseFloat(d.P_55_59_JR) + parseFloat(d.P_60_65_JR) + parseFloat(d.P_65_69_JR) + parseFloat(d.P_70_74_JR) + parseFloat(d.P_75_79_JR) + parseFloat(d.P_80_84_JR) + parseFloat(d.P_85_89_JR) + parseFloat(d.P_90_94_JR) + parseFloat(d.P_95_EO_JR));
-			})
+			.defer(d3.json, "/res/data.json")
 			.await(dataLoaded);
 
 	});

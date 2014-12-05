@@ -2,21 +2,79 @@
 (function (scope) {
 	'use strict';
 	
-	scope.Municipality = function (_name, _code, _feature) {
+	/**
+	 * Represents a Municipality on the map
+	 *
+	 * @param _name String The name of this municipality
+	 * @param _code String The code of this municipality
+	 * @param _feature Feature GeoJSON Feature representating this municipality on a map
+	 * @param _properties Object Properties for this municipality
+	 */
+	scope.Municipality = function (_name, _code, _feature, _properties) {
 		var
 			///String The name of this municipality
 			name,
 			///String The code of this municipality
 			code,
 			///Feature GeoJSON Feature representating this municipality on a map
-			feature;
+			feature,
+			///Object Properties for this municipality
+			properties,
+			///Municipality Reference to the current Municipality
+			that = this;
 		
+		/**
+		 * Gets the name of the Municipality
+		 *
+		 * @return String The name of the Municipality
+		 */
+		this.getName = function () {
+			return name;
+		};
+
+		/**
+		 * Returns the feature that represents this municipality on a map
+		 *
+		 * @return Feature GeoJSON feature that represents this municipality on a map
+		 */
 		this.getFeature = function () {
 			return feature;
 		};
 		
+		/**
+		 * Gets a property for this municipality, if it exists
+		 *
+		 * @param String prop The property
+		 * @return Object The value of the requested property, or null if it doesn't exist
+		 */
+		this.getProperty = function (prop) {
+			if (properties.hasOwnProperty(prop)) {
+				return properties[prop];
+			} else {
+				return null;
+			}
+		};
+
+		/**
+		 * Gets the map value for this municipality
+		 */
 		this.getValue = function () {
-			return 0.5;
+			var properties = [
+				"P_50_54_JR",
+				"P_55_59_JR",
+				"P_60_65_JR",
+				"P_65_69_JR",
+				"P_70_74_JR",
+				"P_75_79_JR",
+				"P_80_84_JR",
+				"P_85_89_JR",
+				"P_90_94_JR",
+				"P_95_EO_JR"
+			], that = this;
+
+			return properties.reduce(function (previousValue, currentValue, index, array) {
+				return previousValue + parseFloat(that.getProperty(currentValue));
+			}, 0);
 		};
 		
 		//Constructor
@@ -24,7 +82,8 @@
 			name = _name;
 			code = _code;
 			feature = _feature;
-			feature.parent = this;
+			feature.parent = that;
+			properties = _properties;
 		}());
 		
 		return this;
@@ -37,7 +96,7 @@
 	 * @return Municipality The Municipality
 	 */
 	scope.Municipality.fromJSON = function (data) {
-		return new scope.Municipality(data.gm_naam, data.gm_code, data);
+		return new scope.Municipality(data.gm_naam, data.gm_code, data, data.data);
 	};
 	
 }(this));
