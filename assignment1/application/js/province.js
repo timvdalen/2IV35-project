@@ -68,6 +68,7 @@
 			name = _name;
 			municipalities = _municipalities;
 			feature = _feature;
+			feature.parent = this;
 			
 			expanded = false;
 		}());

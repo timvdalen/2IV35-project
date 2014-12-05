@@ -24,6 +24,7 @@
 			name = _name;
 			code = _code;
 			feature = _feature;
+			feature.parent = this;
 		}());
 		
 		return this;
