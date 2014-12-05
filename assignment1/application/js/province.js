@@ -48,7 +48,7 @@
 		this.getFeatures = function () {
 			if (expanded) {
 				//The province is expanded, return individual municipalities
-				var ret, i;
+				var ret = [], i;
 				for (i = 0; i < municipalities.length; i += 1) {
 					ret.push(municipalities[i].getFeature());
 				}
@@ -138,4 +138,14 @@
 		);
 	};
 	
+	/**
+	 * Contracts all given Provinces
+	 */
+	scope.Province.contractAll = function (provinces) {
+		var i;
+		for (i = 0; i < provinces.length; i += 1) {
+			provinces[i].expand(false);
+		}
+	};
+
 }(this));

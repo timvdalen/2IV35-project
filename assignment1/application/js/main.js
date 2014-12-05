@@ -2,10 +2,8 @@
 (function (scope) {
 	'use strict';
 
-	scope.data = [];
-
 	$(function () {
-		var width, height, linearColorScale, svg, projection, path, g;
+		var width, height, linearColorScale, svg, projection, path, g, provinces = [];
 
 		width = $("#mainContainer").width();
 		height = $("#mainContainer").width();
@@ -32,19 +30,17 @@
 
 		g = svg.append("g");
 
-		function dataLoaded(error, mapData) {
-			var provinces = [], i, values;
-			for (i = 0; i < mapData.length; i += 1) {
-				provinces.push(scope.Province.fromJSON(mapData[i]));
-			}
+		function refreshData() {
+			//Clean up
+			g.selectAll("path").remove();
 
-			scope.data = scope.Province.getCollection(provinces).features;
-
-			values = scope.Province.getValues(provinces);
-
+			//Calculate color scale
+			var values = scope.Province.getValues(provinces);
 			linearColorScale.domain([d3.min(values), d3.max(values)]);
+
+			//Add data
 			g.selectAll("path")
-				.data(scope.data).enter()
+				.data(scope.Province.getCollection(provinces).features).enter()
 				.append("path")
 				.attr("d", path)
 				.style("fill", function (d) {
@@ -54,14 +50,26 @@
 					$(this).on('click', {parent: d.parent}, function (e) {
 						if (e.data.parent instanceof scope.Province) {
 							//Handle Province click
+							scope.Province.contractAll(provinces);
+							d.parent.expand(true);
+							refreshData();
 						} else if (e.data.parent instanceof scope.Municipality) {
 							//Handle Municipality click
+							scope.showDetail(e.data.parent);
 						}
 					});
 				})
 				.append("title").text(function (d) {
 					return d.parent.getName() + ": " + parseInt(d.parent.getValue(), 10) + "% 50 jaar of ouder";
 				});
+		}
+
+		function dataLoaded(error, mapData) {
+			var i;
+			for (i = 0; i < mapData.length; i += 1) {
+				provinces.push(scope.Province.fromJSON(mapData[i]));
+			}
+			refreshData();
 		}
 
 		queue()
