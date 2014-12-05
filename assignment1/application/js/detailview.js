@@ -47,17 +47,7 @@
 	function translation(x, y) {
 		return 'translate(' + x + ',' + y + ')';
 	}
-	
-	function aant(data, prop, male) {
-		prop = "p_" + prop + "_jr";
-		if (male) {
-			return data.properties[prop] * data.properties.aant_man;
-		} else {
-			return data.properties[prop] * data.properties.aant_vrouw;
-		}
-	}
 
-	
 	function dataFromMunicipality(municipality) {
 		var data = [], i, j, pop;
 
@@ -68,8 +58,7 @@
 			}
 			data.push({
 				group: groups[i].label,
-				male: pop,
-				female: pop
+				pop: pop
 			});
 		}
 
@@ -92,14 +81,14 @@
 		};
 			
 		// the width of each side of the chart
-		regionWidth = w / 2 - margin.middle;
+		regionWidth = w;
 
 		// these are the x-coordinates of the y-axes
-		pointA = regionWidth;
-		pointB = w - regionWidth;
+		pointA = 0;
+		pointB = margin.middle + 5;
 
 		scope.showDetail = function (municipality) {
-			var data, totalPopulation, percentage, svg, maxValue, xScale, xScaleLeft, xScaleRight, yScale, yAxisLeft, yAxisRight, xAxisRight, xAxisLeft, leftBarGroup, rightBarGroup;
+			var data, totalPopulation, percentage, svg, maxValue, xScale, xScaleLeft, xScaleRight, yScale, yAxisLeft, yAxisRight, xAxisRight, xAxisLeft, leftBarGroup, rightBarGroup, bar;
 
 			$("#detail").empty();
 			$(".detailExplanation").hide();
@@ -107,7 +96,7 @@
 			data = dataFromMunicipality(municipality);
 
 			// GET THE TOTAL POPULATION SIZE AND CREATE A FUNCTION FOR RETURNING THE PERCENTAGE
-			totalPopulation = d3.sum(data, function (d) { return d.male + d.female; });
+			totalPopulation = d3.sum(data, function (d) { return d.pop; });
 			percentage = function (d) { return d / totalPopulation; };
 			  
 			  
@@ -121,10 +110,7 @@
 
 			// find the maximum data value on either side
 			//  since this will be shared by both of the x-axes
-			maxValue = Math.max(
-				d3.max(data, function (d) { return percentage(d.male); }),
-				d3.max(data, function (d) { return percentage(d.female); })
-			);
+			maxValue = d3.max(data, function (d) { return percentage(d.pop); });
 
 			// SET UP SCALES
 
@@ -152,8 +138,7 @@
 			yAxisLeft = d3.svg.axis()
 				.scale(yScale)
 				.orient('right')
-				.tickSize(4, 0)
-				.tickPadding(margin.middle - 4);
+				.tickSize(0, 0);
 
 			yAxisRight = d3.svg.axis()
 				.scale(yScale)
@@ -166,16 +151,6 @@
 				.orient('bottom')
 				.tickFormat(d3.format('%'));
 
-			xAxisLeft = d3.svg.axis()
-				// REVERSE THE X-AXIS SCALE ON THE LEFT SIDE BY REVERSING THE RANGE
-				.scale(xScale.copy().range([pointA, 0]))
-				.orient('bottom')
-				.tickFormat(d3.format('%'));
-
-			// MAKE GROUPS FOR EACH SIDE OF CHART
-			// scale(-1,1) is used to reverse the left side so the bars grow left instead of right
-			leftBarGroup = svg.append('g')
-				.attr('transform', translation(pointA, 0) + 'scale(-1,1)');
 			rightBarGroup = svg.append('g')
 				.attr('transform', translation(pointB, 0));
 
@@ -193,35 +168,30 @@
 				.call(yAxisRight);
 
 			svg.append('g')
-				.attr('class', 'axis x left')
-				.attr('transform', translation(0, h))
-				.call(xAxisLeft);
-
-			svg.append('g')
 				.attr('class', 'axis x right')
 				.attr('transform', translation(pointB, h))
 				.call(xAxisRight);
 
 			// DRAW BARS
-			leftBarGroup.selectAll('.bar.left')
-				.data(data)
-				.enter()
-				.append('rect')
-					.attr('class', 'bar left')
-					.attr('x', 0)
-					.attr('y', function (d) { return yScale(d.group); })
-					.attr('width', function (d) { return xScale(percentage(d.male)); })
-					.attr('height', yScale.rangeBand());
 
-			rightBarGroup.selectAll('.bar.right')
+			bar = rightBarGroup.selectAll('.bar.right')
 				.data(data)
 				.enter()
-				.append('rect')
-					.attr('class', 'bar right')
-					.attr('x', 0)
-					.attr('y', function (d) { return yScale(d.group); })
-					.attr('width', function (d) { return xScale(percentage(d.female)); })
-					.attr('height', yScale.rangeBand());
+				.append('g')
+				.attr('class', 'barHolder');
+
+			bar.append('rect')
+						.attr('class', 'bar right')
+						.attr('x', 0)
+						.attr('y', function (d) { return yScale(d.group); })
+						.attr('width', function (d) { return xScale(percentage(d.pop)); })
+						.attr('height', yScale.rangeBand());
+
+			bar.append('text')
+				.attr('class', 'bartext')
+				.attr('x', 20)
+				.attr('y', function (d) { return yScale(d.group) + 23; })
+				.text(function (d) { return parseInt(percentage(d.pop) * 100, 10) + "%"; });
 		};
 	});
 }(this));

@@ -13,13 +13,23 @@ svg#detail .bar {
 	fill-opacity: 0.5;
 }
 
-svg#detail .bar:hover {
+svg#detail .barHolder:hover .bar {
 	fill-opacity: 0.8;
 }
 
-svg#detail .bar.left {
-	fill: steelblue;
+svg#detail .bar {
+	fill: LightSlateGray;
 }
-svg#detail .bar.right {
-	fill: firebrick;
+
+svg#detail .bartext {
+	opacity: 0.5;
+	display: none;
+}
+
+svg#detail .barHolder:hover .bartext {
+	display: initial;
+}
+
+svg#detail g.axis.y.left > path.domain {
+	display: none;
 }
