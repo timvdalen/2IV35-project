@@ -30,9 +30,9 @@
 
 		g = svg.append("g");
 
-		function calculateLegend() {
+		function calculateLegend(recalculate) {
 			var values, minValue, maxValue;
-			values = scope.Province.getValues(provinces);
+			values = scope.Province.getValues(provinces, recalculate);
 			minValue = d3.min(values);
 			maxValue = d3.max(values);
 			linearColorScale.domain([minValue, maxValue]);
@@ -57,8 +57,13 @@
 					$(this).on('click', {parent: d.parent}, function (e) {
 						if (e.data.parent instanceof scope.Province) {
 							//Handle Province click
-							scope.Province.contractAll(provinces);
+							if (scope.settings.get('deexpand') === true) {
+								scope.Province.contractAll(provinces);
+							}
 							d.parent.expand(true);
+							if (scope.settings.get('rescalecolors') === true) {
+								calculateLegend(true);
+							}
 							refreshData();
 						} else if (e.data.parent instanceof scope.Municipality) {
 							//Handle Municipality click
@@ -78,7 +83,7 @@
 			}
 
 			//Calculate color scale
-			calculateLegend();
+			calculateLegend(false);
 
 			refreshData();
 		}

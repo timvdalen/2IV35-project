@@ -18,3 +18,7 @@ svg#main path:hover{
 	height: 50px;
 	border: 1px solid black;
 }
+
+.settings {
+	margin-top: 50px;
+}

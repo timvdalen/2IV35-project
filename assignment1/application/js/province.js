@@ -64,8 +64,9 @@
 		 * 
 		 * @return Float The value
 		 */
-		this.getValue = function () {
+		this.getValue = function (context) {
 			var total = 0, i;
+
 			//The province is not expanded, return the avg of the values
 			for (i = 0; i < municipalities.length; i += 1) {
 				total += municipalities[i].getValue();
@@ -88,6 +89,19 @@
 			return ret;
 		};
 		
+		/**
+		 * Gets the values for this province, based on the expansion state
+		 *
+		 * @return Array[Float] The values
+		 */
+		this.getValuesWithContext = function () {
+			if (expanded) {
+				return this.getValues();
+			} else {
+				return [this.getValue()];
+			}
+		};
+
 		//Constructor
 		(function () {
 			name = _name;
@@ -122,16 +136,22 @@
 	/**
 	 * Gets all values for the given provinces, useful for calculating min and max values
 	 * 
+	 * @param Array[Province] provinces The provinces to calculate for
+	 * @param Bool context Whether or not to use the expansion state
 	 * @return Array[Float] All values
 	 */
-	scope.Province.getValues = function (provinces) {
+	scope.Province.getValues = function (provinces, context) {
 		var ret = [], i;
 		for (i = 0; i < provinces.length; i += 1) {
-			ret.push.apply(ret, provinces[i].getValues());
+			if (context === true) {
+				ret.push.apply(ret, provinces[i].getValuesWithContext());
+			} else {
+				ret.push.apply(ret, provinces[i].getValues());
+			}
 		}
 		return ret;
 	};
-	
+
 	/**
 	 * Parses a JSON representation of a Province and its Municipalities
 	 * 
