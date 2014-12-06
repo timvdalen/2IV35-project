@@ -3,7 +3,7 @@
 	'use strict';
 
 	$(function () {
-		var width, height, linearColorScale, svg, projection, path, g, provinces = [];
+		var width, height, linearColorScale, svg, projection, path, g, provinces = [], reloadData, refreshData;
 
 		width = $("#mainContainer").width();
 		height = $("#mainContainer").width();
@@ -41,13 +41,17 @@
 			$("#legendMax").text(parseInt(maxValue, 10));
 		}
 
-		function refreshData() {
+		reloadData = function () {
+			refreshData(scope.Province.getCollection(provinces).features);
+		};
+
+		refreshData = function (data) {
 			//Clean up
 			g.selectAll("path").remove();
 
 			//Add data
 			g.selectAll("path")
-				.data(scope.Province.getCollection(provinces).features).enter()
+				.data(data).enter()
 				.append("path")
 				.attr("d", path)
 				.style("fill", function (d) {
@@ -64,7 +68,7 @@
 							if (scope.settings.get('rescalecolors') === true) {
 								calculateLegend(true);
 							}
-							refreshData();
+							reloadData();
 						} else if (e.data.parent instanceof scope.Municipality) {
 							//Handle Municipality click
 							scope.showDetail(e.data.parent);
@@ -74,7 +78,7 @@
 				.append("title").text(function (d) {
 					return d.parent.getName() + ": " + parseInt(d.parent.getValue(), 10) + "% 50 jaar of ouder";
 				});
-		}
+		};
 
 		function dataLoaded(error, mapData) {
 			var i;
@@ -85,7 +89,11 @@
 			//Calculate color scale
 			calculateLegend(false);
 
-			refreshData();
+			reloadData();
+
+			scope.filter.setup(provinces, function (data) {
+				refreshData(data);
+			});
 		}
 
 		queue()

@@ -102,6 +102,22 @@
 			}
 		};
 
+		/**
+		 * Returns the features of municipalities that match name
+		 *
+		 * @param String name The string to match
+		 * @return Array[Feature] GeoJSON features in the province that match
+		 */
+		this.getByName = function (name) {
+			var ret = [], i;
+			for (i = 0; i < municipalities.length; i += 1) {
+				if (municipalities[i].getName().toLowerCase().indexOf(name.toLowerCase()) > -1) {
+					ret.push(municipalities[i].getFeature());
+				}
+			}
+			return ret;
+		};
+
 		//Constructor
 		(function () {
 			name = _name;
@@ -180,6 +196,23 @@
 		for (i = 0; i < provinces.length; i += 1) {
 			provinces[i].expand(false);
 		}
+	};
+
+	/**
+	 * Gets all municipalities within the given provinces that match a given name
+	 *
+	 * @param Array[Province] provinces The provinces to search
+	 * @param String name The name to match
+	 * @return FeatureCollection Collection containing data for the matching municipalities
+	 */
+	scope.Province.getByName = function (provinces, name) {
+		var ret = [], i;
+
+		for (i = 0; i < provinces.length; i += 1) {
+			ret.push.apply(ret, provinces[i].getByName(name));
+		}
+
+		return ret;
 	};
 
 }(this));

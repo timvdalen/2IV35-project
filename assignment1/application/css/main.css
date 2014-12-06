@@ -1,3 +1,7 @@
+#filter {
+	margin-bottom: 20px;
+}
+
 svg#main path {
 	stroke: grey;
 	stroke-width: 1px;
