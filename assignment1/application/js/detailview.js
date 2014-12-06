@@ -192,6 +192,8 @@
 				.attr('x', 20)
 				.attr('y', function (d) { return yScale(d.group) + 23; })
 				.text(function (d) { return parseInt(percentage(d.pop) * 100, 10) + "%"; });
+
+			$("#detailContainer .municipalityName").text(municipality.getName());
 		};
 	});
 }(this));
