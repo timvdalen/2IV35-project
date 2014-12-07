@@ -3,7 +3,7 @@
 	'use strict';
 
 	$(function () {
-		var width, height, linearColorScale, svg, projection, path, g, provinces = [], reloadData, refreshData;
+		var width, height, linearColorScale, svg, projection, path, g, provinces = [], reloadData, refreshData, showLegendValue;
 
 		width = $("#mainContainer").width();
 		height = $("#mainContainer").width();
@@ -74,10 +74,23 @@
 							scope.showDetail(e.data.parent);
 						}
 					});
+					$(this).on('mouseenter', function (e) {
+						showLegendValue(linearColorScale.copy().range([0, 1])(d.parent.getValue()));
+					});
 				})
 				.append("title").text(function (d) {
 					return "Average age in " + d.parent.getName() + " is " + parseFloat(d.parent.getValue() / 100).toFixed(1);
 				});
+		};
+
+		showLegendValue = function (value) {
+			if (value === -1) {
+				$(".legendBarValue").fadeOut('fast');
+			} else {
+				var margin = $(".legendBar").width() * value;
+				$(".legendBarValue").show();
+				$(".legendBarValue").css({"margin-left": margin});
+			}
 		};
 
 		function dataLoaded(error, mapData) {
@@ -100,5 +113,8 @@
 			.defer(d3.json, "/res/data.json")
 			.await(dataLoaded);
 
+		$("svg#main").on('mouseleave', function (e) {
+			showLegendValue(-1);
+		});
 	});
 }(this));
