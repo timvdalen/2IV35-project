@@ -60,6 +60,16 @@
 		 */
 		this.getValue = function () {
 			var properties = [
+				"P_00_04_JR",
+				"P_05_09_JR",
+				"P_10_14_JR",
+				"P_15_19_JR",
+				"P_20_24_JR",
+				"P_25_29_JR",
+				"P_30_34_JR",
+				"P_35_39_JR",
+				"P_40_44_JR",
+				"P_45_49_JR",
 				"P_50_54_JR",
 				"P_55_59_JR",
 				"P_60_65_JR",
@@ -73,7 +83,7 @@
 			], that = this;
 
 			return properties.reduce(function (previousValue, currentValue, index, array) {
-				return previousValue + parseFloat(that.getProperty(currentValue));
+				return previousValue + parseFloat(that.getProperty(currentValue)*((index+1)*5-2.5));
 			}, 0);
 		};
 		
