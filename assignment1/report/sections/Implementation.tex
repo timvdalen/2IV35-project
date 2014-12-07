@@ -1,1 +1,114 @@
 \section{Implementation}\label{sec:imp}
+
+	Our visualization is implemented for the web platform.
+	We use the following technologies:
+
+	\begin{itemize}
+		\item HTML (spec v. 5)
+		\item CSS (spec v. 3)
+		\item SVG
+	\end{itemize}
+
+	In order to work more efficiently, we used the following libraries:
+
+	\begin{description}
+		\item[D3.js] to generate the SVG graphs
+		\item[jQuery] to easily manipulate non-graph DOM elements
+		\item[Bootstrap] to rapidly develop a minimal interface
+		\item[Bootstrap switch] to add user-friendly switches for settings
+	\end{description}
+
+	\subsection{Running}
+		Due to security policies in most browsers, the best way to run the application is to start a webserver from the \texttt{application} directory.
+		For instance, on a system with Python installed, you can do:
+
+		\begin{lstlisting}[language=bash]
+$ python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+# Navigate to http://localhost:8000/ in a browser
+		\end{lstlisting}
+
+		For your convenience, we are also hosting the latest version of this application on \url{http://2IV35.edu.timvdalen.nl/}.
+
+		\subsubsection{Target}
+			Due to time constraints and the fact that we wanted to use modern technologies, we were not able to guarantee correctness of the application in all browsers.
+			While the application might work fine on other platforms, we recommend using a modern browser based on the WebKit or Blink rendering engines, such as Chrome, Chromium, Safari or later versions of Opera.
+
+	\subsection{Components}
+		Our application is built up from Object Oriented JavaScript modules.
+		All modules are documented using Doxygen-compatiple documentation.
+
+		We have the following modules:
+
+		\begin{itemize}
+			\item Data
+				\begin{itemize}
+					\item Municipality
+					\item Province
+				\end{itemize}
+			\item Helpers
+				\begin{itemize}
+					\item Settings
+					\item Filter
+				\end{itemize}
+			\item Graph
+				\begin{itemize}
+					\item Main
+					\item DetailView
+				\end{itemize}
+		\end{itemize}
+
+		\subsubsection{Data}
+			The following classes represent the data in our application.
+			They have methods for easy manipulation and province mechanisms to export the data into GeoJSON suitable for D3.
+
+			\paragraph{Municipality} represents a municipality on the map.
+				It has a name, a GeoJSON feature that represents it on a map and some data.
+				It exposes a method to get any data for the municipality by key, and a \texttt{getValue} method that returns the main value for the municipality.
+				The main value is the one that we use to color the municipality on the map.
+				It is built up using a combination of calls to data function.
+				Municipality has a static method that returns a new \texttt{Municipality} based on a JSON document.
+
+			\paragraph{Province} represents a province on the map.
+				It has a name, a GeoJSON feature, a list of municipalities and an expansion state.
+				Note that it does not have data, since there is no province-level data in the data set.
+				Based on the expansion state, calling \texttt{getFeature} on a \texttt{Province} will either results in the province's own feature (which is a MultiPolygon of the entire province) or a collection of the features of the municipalities in this province.
+				Furthermore, it exposes a \texttt{getValue} function that returns the average of all values in the municipalities in this province, weighted by their population.
+				It also provides a method that returns all values, used for determining the minumum and maximum values in the data set.
+				The \texttt{Province} class also exposes some static methods that are useful when manipulating a set of provinces.
+				The most important one of these is the \texttt{getCollection} method, which returns a GeoJSON \texttt{FeatureCollection} that contains the geographic data for all given provinces (using their expansion state).
+
+		\subsubsection{Helpers}
+
+			\paragraph{Filter} adds a search bar to the document and binds to the value of that input.
+				When the filter is setup, the main module gives it a callback that can be used to send new geographical data to the main module.
+				When the value of the input bar changes, it searches all instances of \texttt{Province} for municipalities that match by name.
+				The matching function is very simple: we check, for each municipality, case insensitive, if the given filter query appears in the municipality name.
+				The municipalities that match are then sent to the main module using the given callback.
+				Figure~\ref{fig:impl:filter} shows the states of the application before and after typing in the filter bar.
+
+				\begin{figure}[H]
+					\centering
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{impl_filter_before}}
+						\caption{Before filtering}
+						\label{fig:impl:filter:before}
+					\end{subfigure}
+					~
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{impl_filter_after}}
+						\caption{After filtering}
+						\label{fig:impl:filter:after}
+					\end{subfigure}
+					\caption{Filtering module}
+					\label{fig:impl:filter}
+				\end{figure}
+
+			\paragraph{Settings}
+
+		\subsubsection{Graph}
+
+			\paragraph{Main}
+
+			\paragraph{DetailView}
+
