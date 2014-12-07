@@ -37,8 +37,8 @@
 			maxValue = d3.max(values);
 			linearColorScale.domain([minValue, maxValue]);
 			$(".legendBar").css('background', '-webkit-linear-gradient(left, ' + linearColorScale(minValue) + ', ' + linearColorScale(maxValue) + ')');
-			$("#legendMin").text(parseFloat(minValue/100, 10).toFixed(1));
-			$("#legendMax").text(parseFloat(maxValue/100, 10).toFixed(1));
+			$("#legendMin").text(parseFloat(minValue / 100, 10).toFixed(1));
+			$("#legendMax").text(parseFloat(maxValue / 100, 10).toFixed(1));
 		}
 
 		reloadData = function () {
@@ -76,7 +76,7 @@
 					});
 				})
 				.append("title").text(function (d) {
-					return "Average age in " + d.parent.getName() + " is " + parseFloat(d.parent.getValue()/100).toFixed(1);
+					return "Average age in " + d.parent.getName() + " is " + parseFloat(d.parent.getValue() / 100).toFixed(1);
 				});
 		};
 
