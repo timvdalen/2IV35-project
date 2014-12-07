@@ -1,1 +1,32 @@
 \section{Discussion}\label{Sec:Dis}
+\subsection{How is the average age of residents divided Netherlands?}
+To answer this question we just open the application and look at the main view. In this view we can easily see that the age in some provinces is above the average. The average in the north of the land seems higher than in the middle or south. Also the average age in Limburg seems above average. 
+\begin{figure}[H]
+					\centering
+						\includegraphics[width=0.4\textwidth]{{disc_global}}
+						\caption{The age distribution in the Netherlands}
+				\end{figure}
+\subsection{How is the age divided in a single municipality?}
+When we want to see the how the age is divided in a municipality, we simply click on that municipality. If we cannot find it we can use the filter first. After we click on the municipality the detail view shows up. In the bar chart of Eindhoven we can easily see that the age category 20-29 is the largest. We can also compare any two age categories and find the bigger one. When we are not sure how much percent is is, we can hover over it to show the percentage that belongs to that category. 
+\begin{figure}[H]
+					\centering
+						\includegraphics[width=0.4\textwidth]{{disc_agedist}}
+						\caption{The age distribution in Eindhoven}
+				\end{figure}
+\subsection{What is the difference in age between two municipalities?}
+When we want to compare two different municipalities, we can first hover above both to see what the average age is in both municipalities. If the difference is big enough we can see it in the difference in colour. However when we want to compare two age categories, we have to click on both municipalities and hover above the category and read the value and compare it with the value of the other municipality. It would be easier to compare both bar charts above or next to each other, so this solution is not optimal. For example when we want to compare the percentage of people between 30 and 39 in Eindhoven and Amsterdam, we have to click on both Amsterdam and Eindhoven and hover over the category and read the values. Then we see that it is 15 percent in Eindhoven and 18 percent in Amsterdam. \\
+\begin{figure}[H]
+					\centering
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{disc_agedist2}}
+						\caption{The age distribution in Eindhoven}
+					\end{subfigure}
+					~
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{disc_agedist2a}}
+						\caption{The age distribution in Amsterdam}
+					\end{subfigure}
+					\caption{Comparing Eindhoven to Amsterdam}
+				\end{figure}
+This does not work really well if we want to compare multiple categories or some groups combined. Suppose we want to compare the percentage of people younger than fifty. Then we have to sum all values below 50. Or suppose we want to know the values of a category that is not there. For example 65 years and older, which is in the data but not available for the user. 
+\subsection{Futher works}
