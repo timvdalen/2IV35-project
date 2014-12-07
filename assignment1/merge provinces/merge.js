@@ -45,16 +45,16 @@ fs.writeFile("tmp/flevoland_merged.json",JSON.stringify(merged) , function(err) 
     } else {
         console.log("The file was saved!");
     }
-});  
-var nh = JSON.parse(fs.readFileSync('tmp/noordholland_unmerged.json'))
+});  */
+var nh = JSON.parse(fs.readFileSync('tmp/noordholland_unmerged2.json'))
 var merged = merge(nh)
-fs.writeFile("tmp/noordholland_merged.json",JSON.stringify(merged) , function(err) {
+fs.writeFile("tmp/noordholland_merged2.json",JSON.stringify(merged) , function(err) {
     if(err) {
         console.log(err);
     } else {
         console.log("The file was saved!");
     }
-}); 
+}); /*
 var lim = JSON.parse(fs.readFileSync('tmp/limburg_unmerged.json'))
 var merged = merge(lim)
 fs.writeFile("tmp/limburg_merged.json",JSON.stringify(merged) , function(err) {
@@ -72,7 +72,7 @@ fs.writeFile("tmp/zeeland_merged.json",JSON.stringify(merged) , function(err) {
     } else {
         console.log("The file was saved!");
     }
-}); */
+}); 
 var frie = JSON.parse(fs.readFileSync('tmp/new_unmerged.json'))
 var merged = merge(frie)
 fs.writeFile("tmp/friesland_merged2.json",JSON.stringify(merged) , function(err) {
