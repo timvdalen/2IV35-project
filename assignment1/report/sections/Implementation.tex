@@ -136,8 +136,19 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 				However, then we would also need to provide a mechanism for resetting to default settings.
 
 		\subsubsection{Graph}
+			The Main and DetailView modules are responsible for the graphs that are shown in the application.
+			As the name suggests, Main is the program entry.
 
-			\paragraph{Main}
+			\paragraph{Main} loads in the data and converts it to an array of \texttt{Province} instances using the \texttt{fromJSON} function.
+				When the data is loaded into our application data classes, the main module gets the GeoJSON features and initializes a D3 SVG map graph in the main graph area.
+				It also adds title text and click event handlers to each data element.
+				When a data element is clicked, it checks whether that element is a \texttt{Province} or a \texttt{Municipality}.
+				In case of a \texttt{Province}, the main module expands the \texttt{Province} and refreshes its data (thereby effectively replacing the province feature by a collection of municipalities).
+				In case of a \texttt{Municipality}, the main module calls the DetailView module to display some in-depth information about the selected municipality.
 
-			\paragraph{DetailView}
+			\paragraph{DetailView} is used to show more information about a municipality, which would not fit in the main view.
+				It consists of a horizontal bar chart and it is based on a D3 example for a population pyramid by Stack Overflow user `jshanley', since our initial intention was to show population per gender.
+				However, since the data set we were given does not contain the age distribution per gender, we edited the example to only show one side of the pyramid.
+				The module exposes a \texttt{showDetail} method that takes a \texttt{Municipality} as the sole argument.
+				It uses the data method of the municipality to setup the bar chart and then adds it to the detail view area of the document.
 
