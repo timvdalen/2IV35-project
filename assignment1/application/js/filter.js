@@ -30,12 +30,18 @@
 	 * Applies filter
 	 */
 	scope.filter.apply = function (e) {
-		var val = $(e.target).val();
+		var val = $(e.target).val(), ret;
 		if (val === '') {
 			scope.filter.clear();
 			return;
 		}
-		cb(scope.Province.getByName(provinces, val));
+		ret = scope.Province.getByName(provinces, val);
+		if (ret.length < 1) {
+			$("#filter").addClass("has-warning");
+		} else {
+			$("#filter").removeClass("has-warning");
+		}
+		cb(ret);
 	};
 
 	/**

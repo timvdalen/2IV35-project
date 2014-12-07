@@ -9,5 +9,9 @@ assignment1/report/report final.tex
 *.log
 *.out
 *.pdf
+*.toc
+*.synctex.gz
 assignment1/report/report.synctex.gz(busy)
 assignment1/report/report.toc
+assignment1/report/report.synctex.gz
+*.gz

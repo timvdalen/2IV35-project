@@ -83,7 +83,7 @@
 			], that = this;
 
 			return properties.reduce(function (previousValue, currentValue, index, array) {
-				return previousValue + parseFloat(that.getProperty(currentValue)*((index+1)*5-2.5));
+				return previousValue + parseFloat(that.getProperty(currentValue) * ((index + 1) * 5 - 2.5));
 			}, 0);
 		};
 		
