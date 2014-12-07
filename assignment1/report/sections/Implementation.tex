@@ -104,7 +104,36 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 					\label{fig:impl:filter}
 				\end{figure}
 
-			\paragraph{Settings}
+			\paragraph{Settings} adds support for end-user settings for the visualization.
+				The module has a list of available settings, with for each setting a description, extended description and default value.
+				When the settings module is initialized, it generates a HTML DOM node for a form that can be inserted in the page.
+				Based on the type of the setting, a different type of form element (using Bootstrap classes) is generated.
+				The settings module also binds to change events in the generated form elements, so that any change in the user settings is immediately reflected in the settings state.
+				Any other module can access each setting using the \texttt{get} method of \texttt{settings} to get the real-time value of a certain setting.
+				We use these settings to give sensible defaults for functionality that might be too restrictive for advanced users.
+				Figure~\ref{fig:impl:settings} shows the settings we have defined as JavaScript objects and the resulting generated user interface.
+
+				\begin{figure}[H]
+					\centering
+					\begin{subfigure}[b]{0.8\textwidth}
+						\includegraphics[width=\textwidth]{{impl_settings_code}}
+						\caption{Settings definition}
+						\label{fig:impl:settings:code}
+					\end{subfigure}
+					\\
+					\begin{subfigure}[b]{0.8\textwidth}
+						\includegraphics[width=\textwidth]{{impl_settings_gui}}
+						\caption{Resulting interface}
+						\label{fig:impl:settings:gui}
+					\end{subfigure}
+					\caption{Settings}
+					\label{fig:impl:settings}
+				\end{figure}
+
+				Right now, we do not permanently save user settings.
+				When the application is reloaded, the default settings are restored.
+				If we added settings that have more to do with personal preferences than with temporarily changing the view to explore the data in a different way, it would make sense to store settings in a cookie.
+				However, then we would also need to provide a mechanism for resetting to default settings.
 
 		\subsubsection{Graph}
 
