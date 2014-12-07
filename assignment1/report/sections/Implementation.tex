@@ -80,7 +80,29 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 
 		\subsubsection{Helpers}
 
-			\paragraph{Filter}
+			\paragraph{Filter} adds a search bar to the document and binds to the value of that input.
+				When the filter is setup, the main module gives it a callback that can be used to send new geographical data to the main module.
+				When the value of the input bar changes, it searches all instances of \texttt{Province} for municipalities that match by name.
+				The matching function is very simple: we check, for each municipality, case insensitive, if the given filter query appears in the municipality name.
+				The municipalities that match are then sent to the main module using the given callback.
+				Figure~\ref{fig:impl:filter} shows the states of the application before and after typing in the filter bar.
+
+				\begin{figure}[H]
+					\centering
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{impl_filter_before}}
+						\caption{Before filtering}
+						\label{fig:impl:filter:before}
+					\end{subfigure}
+					~
+					\begin{subfigure}[b]{0.4\textwidth}
+						\includegraphics[width=\textwidth]{{impl_filter_after}}
+						\caption{After filtering}
+						\label{fig:impl:filter:after}
+					\end{subfigure}
+					\caption{Filtering module}
+					\label{fig:impl:filter}
+				\end{figure}
 
 			\paragraph{Settings}
 
