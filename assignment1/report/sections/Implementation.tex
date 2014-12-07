@@ -161,6 +161,8 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 				Besides the main graph, the main module is also responsible for maintaining the legend, shown in Figure~\ref{fig:impl:legend}.
 				The legend is a simple linear gradient that is a graphical representation of the linear color scale that is used to color the map elements.
 				Besides the gradient, it also shows the values that correspond to the minimum and maximum colors.
+				When the user moves their mouse over an area in the map, the legend shows the location of the value on the scale with a simple one pixel wide bar.
+				This makes comparing values easier.
 
 			\paragraph{DetailView} is used to show more information about a municipality, which would not fit in the main view.
 				It consists of a horizontal bar chart and it is based on a D3 example for a population pyramid by Stack Overflow user `jshanley', since our initial intention was to show population per gender.
