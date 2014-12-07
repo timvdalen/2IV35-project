@@ -38,6 +38,11 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 		Our application is built up from Object Oriented JavaScript modules.
 		All modules are documented using Doxygen-compatiple documentation.
 
+		The modules all have their own scope and expose certain functionality (methods or objects) to the main scope.
+		This way, the modules can use each other by referencing these exported methods and objects from their referenced to the main scope (which is given to each module as an argument).
+		In a larger project, we would have used dependency injection instead of polluting the main scope with application-specific classes and methods.
+		However, since we only have six modules, we chose to let them expose functionality to the main scope instead of adding the overhead of dependency injection.
+
 		We have the following modules:
 
 		\begin{itemize}
