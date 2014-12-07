@@ -4,7 +4,7 @@
 		The first view, that was given as an example with the assignment displays all the municipalities on a map of the Netherlands.
 		We will call this view the main view.
 		The reason we still want the use the map is because we think that users who are interested in the use of the application know the location of the municipality they are interested in.
-		This means he can quickly find the location and read it's value and compare it too other municipalities.
+		This means he can quickly find the location and read its value and compare it too other municipalities.
 		Of course not everyone knows which municipalities is displayed on the map exactly, thus hovering over a municipality will show the name and exact value of that municipality.
 		It is not really fast to hover over all municipalities if you do not know where it lies on the map at all, thus we are planning on adding a filter, which enables users to find municipalities really fast.
 
@@ -22,7 +22,7 @@
 		We want to show and or update the detail view each time the user clicks on a municipality in the main view.
 
 		Another visualization technique we want to apply is aggregation.
-		The reason we want to apply this technique is, because there are over 400 different municipalities.
+		The reason we want to apply this technique is because there are over 400 different municipalities.
 		This makes it really hard to compare these municipalities and read the results of the map.
 		So we wanted to bring down the number of different locations down.
 		We thought that logical combinations of municipalities would be the twelve provinces from the Netherlands.
@@ -39,7 +39,7 @@
 		First we had to convert the data of the CBS to data that is in the same format.
 		When we add GM to all ID's in the they got in the same format.
 		So we now have a list of id's for each municipality for each province.
-		We then wrote a simple javascript file that would iterate over each province and add the geometry of each municipality to the correct provinces.
+		We then wrote a simple JavaScript file that would iterate over each province and add the geometry of each municipality to the correct provinces.
 
 		Unfortunately we ran in a problem here.
 		The data with geolocation of each municipalities contained municipalities that no longer existed.
@@ -48,7 +48,7 @@
 
 		Now we had the geometry of each problem, we still had to remove the borders of each municipality and add a new border around the whole province.
 		To do this we used \emph{Turf-merge}.
-		\emph{Turf-merge} is a plugin for NPM, which merges multiple geolocations to one geolocation.
+		\emph{Turf-merge} is a nodejs package which merges multiple geolocations to one geolocation.
 		It worked pretty well, but there were still some borders left in the middle of the province.
 		There were also two municipalities that would not merge with \emph{Turf-merge}.
 		We removed this municipalties and draw them with a square as they were in the middle of the province and merge that square instead of the municipality which it would merge.
