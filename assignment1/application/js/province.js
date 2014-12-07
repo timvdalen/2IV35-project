@@ -65,14 +65,16 @@
 		 * @return Float The value
 		 */
 		this.getValue = function (context) {
-			var total = 0, i;
+			var total = 0, pop, totalPop = 0, i;
 
 			//The province is not expanded, return the avg of the values
 			for (i = 0; i < municipalities.length; i += 1) {
-				total += municipalities[i].getValue();
+				pop = parseInt(municipalities[i].getProperty("AANT_INW"), 10);
+				total += municipalities[i].getValue() * pop;
+				totalPop += pop;
 			}
 
-			return (total / municipalities.length);
+			return (total / totalPop);
 		};
 
 		/**
