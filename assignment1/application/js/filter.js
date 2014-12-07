@@ -48,6 +48,7 @@
 	 * Clears filter
 	 */
 	scope.filter.clear = function () {
+		$("#filter").removeClass("has-warning");
 		cb(scope.Province.getCollection(provinces).features);
 	};
 
