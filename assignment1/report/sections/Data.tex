@@ -5,7 +5,7 @@ We are given two datasets about municipalities in the Netherlands. The first dat
 This attribute shows the id of the municipality. To display the codes they use this format \emph{GM0003,GM0005,GM0007}\\
 \textbf{gm naam} \\
 This attribute shows the name of the municipality. For example \emph{Eindhoven,Groningen,Maastricht} \\
-\textbf{geometryl} \\
+\textbf{geometry} \\
 This attributes maintains all information about the location and area of the municipality and can be used to draw the area of the municipality. \\
 The dataset also has a list properties, but these properties are mostly covered in the next dataset and thus we will not use or discuss these properties. \\ \\
  The other dataset \emph{ cities data.txt}  contains different kind of attributes of each municipality. In the assignment there is a list of all these attributes, this list is shown in appendix \ref{City}. We will only discuss the data on a higher level now. \\
@@ -14,15 +14,15 @@ The dataset also has a list properties, but these properties are mostly covered 
   \textbf{Residents} \\
 There is a lot of different information about the residents:\\
 Addresses: The number of addresses, the number of address per $km^{2}$, number of households, number of households with and without children, number of single households and numbers of cars per household and number of inhabitants per $km^{2}$. \\
-Inhabitants: Number of inhabitans, number of men and women, percentage of each age category splitted up in categories of five years, percentage of married and unmarried people, percentage of divorced people, percentage of widows and widowers and the percentage of foreigners from different countries/areas. \\
+Inhabitants: Number of inhabitants, number of men and women, percentage of each age category split into categories of five years, percentage of married and unmarried people, percentage of divorced people, percentage of widows and widowers and the percentage of foreigners from different countries/areas. \\
  \textbf{Vehicles} \\
  There also is a lot of data about vehicles: The number of cars, the number of cars per household, number of cars per $km^{2}$, number of company cars and the number of motorcycles. \\
   \textbf{Land} \\
 There also is some data about the size of the municipality and how much of that is water and how much is land. \\
 \subsection{Interesting Data}
-We think the percentages of age and foreigners are interesting to visualize, because it are multiple numbers that belong to each other. When you read each number alone they are hard to compare. For example when you see that 4 procent is between 0-5 years old in Eindhoven, but then you do not know how much this is compared to other municiplaities or to the other age categories. So we think it is interesting to find a way to visualize these data in a way that we can understand that data better. 
+We think the percentages of age and foreigners are interesting to visualize, because it are multiple numbers that belong to each other. When you read each number alone they are hard to compare. For example when you see that 4 percent is between 0-5 years old in Eindhoven, but then you do not know how much this is compared to other municipalities  or to the other age categories. So we think it is interesting to find a way to visualize these data in a way that we can understand that data better. 
 \subsection{Additonal data}
-We will use additional data by het \emph{Centraal Bureau voor de Statistiek} which we will calll CBS from now on. The CBS is a bureau that collects and organizes all data about the the Netherlands. The data we need is a list of provinces with their municipalitys. The file is called \emph{2014gemeentenalfabetischperprovincie.xlsx} and can be found on the  \url{ http://www.cbs.nl/nl-NL/menu/methoden/classificaties/overzicht/gemeentelijke-indeling/2014/default.htm}.\\
+We will use additional data by het \emph{Centraal Bureau voor de Statistiek} which we will calll CBS from now on. The CBS is an bureau that collects and organizes all data about the the Netherlands. The data we need is a list of provinces with their municipalities. The file is called \emph{2014gemeentenalfabetischperprovincie.xlsx} and can be found on the  \url{ http://www.cbs.nl/nl-NL/menu/methoden/classificaties/overzicht/gemeentelijke-indeling/2014/default.htm}.\\
 The data consists of only four attributes:\\
 \textbf{provGemcode} \\
 This attribute shows the id of the municipality. Unfortunately it is not in exactly the same format as the original data. For example this data is in the form \emph{0003,0005,0007}, while the original data uses this format \emph{GM0003,GM0005,GM0007}\\
@@ -31,4 +31,4 @@ This attributes shows the id of the province. This ranges from 20-31 ( 12 differ
 \textbf{gemcodel} \\
 This attribute shows the name of the municipality. For example \emph{Eindhoven,Groningen,Maastricht} \\
 \textbf{provcodel} \\
-This attribute shows the name of the province. For example \emph{Groningen,Noord-Brabant,Limburg} \\
+This attribute shows the name of the province. For example \emph{Groningen,Noord-Brabant,Limburg} \\ 
