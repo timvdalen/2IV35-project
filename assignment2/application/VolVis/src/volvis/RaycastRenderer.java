@@ -147,9 +147,6 @@ public class RaycastRenderer extends Renderer implements TFChangeListener {
         VectorMath.setVector(uVec, viewMatrix[0], viewMatrix[4], viewMatrix[8]);
         VectorMath.setVector(vVec, viewMatrix[1], viewMatrix[5], viewMatrix[9]);
         
-         System.out.println("dimX"+viewVec[0]);
-         System.out.println("dimY"+viewVec[1]);
-         System.out.println("dimZ"+viewVec[2]);
         // image is square
         int imageCenter = image.getWidth() / 2;
         
@@ -157,31 +154,19 @@ public class RaycastRenderer extends Renderer implements TFChangeListener {
         double[] volumeCenter = new double[3];
         VectorMath.setVector(volumeCenter, volume.getDimX() / 2, volume.getDimY() / 2, volume.getDimZ() / 2);
         int val = 0;
-        /*
-            for (int j = 0; j < image.getHeight(); j++) {
-            for (int i = 0; i < image.getWidth(); i++) {
-                pixelCoord[0] = uVec[0] * (i - imageCenter) + vVec[0] * (j - imageCenter)
-                        + volumeCenter[0];
-                pixelCoord[1] = uVec[1] * (i - imageCenter) + vVec[1] * (j - imageCenter)
-                        + volumeCenter[1];
-                pixelCoord[2] = uVec[2] * (i - imageCenter) + vVec[2] * (j - imageCenter)
-                        + volumeCenter[2];
-                System.out.println(val);       
-                val = getVoxel(pixelCoord);*/
         // sample on a plane through the origin of the volume data
-        for (int j = 0; j < image.getHeight(); j++) {
-            for (int i = 0; i < image.getWidth(); i++) {
+        for (int j = 0; j < (image.getHeight()/3); j++) {
+            for (int i = 0; i < (image.getWidth()/3); i++) {
                 val = 0;
                 for(int k = 0; k<volume.getDimZ();k++){
-                pixelCoord[0] = uVec[0] * (i - imageCenter) + vVec[0] * (j - imageCenter)
+                pixelCoord[0] = uVec[0] * (3*i - imageCenter) + vVec[0] * (3*j - imageCenter)
                         + viewVec[0]*k +volumeCenter[0];
-                pixelCoord[1] = uVec[1] * (i - imageCenter) + vVec[1] * (j - imageCenter)
+                pixelCoord[1] = uVec[1] * (3*i - imageCenter) + vVec[1] * (3*j - imageCenter)
                         + viewVec[1]*k +volumeCenter[1];
-                pixelCoord[2] = uVec[2] * (i - imageCenter) + vVec[2] * (j - imageCenter)
+                pixelCoord[2] = uVec[2] * (3*i - imageCenter) + vVec[2] * (3*j - imageCenter)
                         + viewVec[2]*k +volumeCenter[2];
                     int x = getVoxel(pixelCoord);
                     if(x > val){
-                        System.out.println(x);
                         val = x;
                         }
                 }
@@ -194,7 +179,12 @@ public class RaycastRenderer extends Renderer implements TFChangeListener {
                 int c_green = voxelColor.g <= 1.0 ? (int) Math.floor(voxelColor.g * 255) : 255;
                 int c_blue = voxelColor.b <= 1.0 ? (int) Math.floor(voxelColor.b * 255) : 255;
                 int pixelColor = (c_alpha << 24) | (c_red << 16) | (c_green << 8) | c_blue;
-                image.setRGB(i, j, pixelColor);
+                
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        image.setRGB((i*3)+x,(j*3)+y, pixelColor);
+                        }
+                }
             }
         }
 
