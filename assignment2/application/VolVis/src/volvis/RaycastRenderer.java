@@ -18,7 +18,7 @@ import volume.Volume;
  *
  * @author michel
  */
-public class RaycastRenderer extends Renderer implements TFChangeListener {
+public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener {
 
     private Volume volume = null;
     RaycastRendererPanel panel;
@@ -267,7 +267,7 @@ public class RaycastRenderer extends Renderer implements TFChangeListener {
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, viewMatrix, 0);
 
         long startTime = System.currentTimeMillis();
-        mip(viewMatrix,4);
+        mip(viewMatrix, this.resolution);
         long endTime = System.currentTimeMillis();
         double runningTime = (endTime - startTime);
         panel.setSpeedLabel(Double.toString(runningTime));

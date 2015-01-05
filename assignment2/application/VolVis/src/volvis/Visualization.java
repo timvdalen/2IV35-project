@@ -18,6 +18,8 @@ import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.glu.GLU;
 import util.TFChangeListener;
 import util.TrackballInteractor;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -26,33 +28,41 @@ import util.TrackballInteractor;
 public class Visualization implements GLEventListener, TFChangeListener {
 
   GLU glu = new GLU();
-    ArrayList<Renderer> renderers;
+    ArrayList<ResolutionRenderer> renderers;
     GLCanvas canvas;
     int winWidth, winHeight;
     double fov = 20.0;
     TrackballInteractor trackball;
+	Timer timer = new Timer();
         
     public Visualization(GLCanvas canvas) {
-        this.renderers = new ArrayList<Renderer>();
+        this.renderers = new ArrayList<ResolutionRenderer>();
         this.canvas = canvas;
         canvas.addMouseMotionListener(new MouseMotionListener()); // listens to drag events
         canvas.addMouseListener(new MousePressListener());
         canvas.addMouseWheelListener(new MouseWheelHandler());
         trackball = new TrackballInteractor(winWidth, winHeight);
+		timer.scheduleAtFixedRate(new ResolutionTimerTask(), 500, 500);
     }
 
     // Add a new renderer (i.e. visualization method) to the visualization
-    public void addRenderer(Renderer vis) {
+    public void addRenderer(ResolutionRenderer vis) {
         renderers.add(vis);
     }
 
     public void update() {
         canvas.repaint(50);
     }
-    
 
+	public void interact() {
+		for (int i = 0; i < renderers.size(); i++) {
+            renderers.get(i).resetResolution();
+        }
+	}
+	
   @Override
     public void changed() {
+		interact();
         canvas.display();
     }
 
@@ -123,7 +133,15 @@ public class Visualization implements GLEventListener, TFChangeListener {
     public void dispose(GLAutoDrawable glad) {
     }
 
-   
+   class ResolutionTimerTask extends TimerTask {
+		@Override
+		public void run() {
+			for (int i = 0; i < renderers.size(); i++) {
+			   renderers.get(i).increaseResolution();
+			}
+			update();
+		}
+   }
    class MousePressListener extends MouseAdapter {
 
        @Override
@@ -133,6 +151,7 @@ public class Visualization implements GLEventListener, TFChangeListener {
            for (int i = 0; i < renderers.size(); i++) {
                renderers.get(i).setInteractiveMode(true);
            }
+		   interact();
        }
        
        @Override
@@ -140,21 +159,20 @@ public class Visualization implements GLEventListener, TFChangeListener {
            for (int i = 0; i < renderers.size(); i++) {
                renderers.get(i).setInteractiveMode(false);
            }
+		   interact();
            update();
        }
    }
    
-    class MouseMotionListener extends MouseMotionAdapter {
-        
-        
-      @Override
-        public void mouseDragged(MouseEvent e) {
-             trackball.drag(e.getX(), e.getY());
-             trackball.setRotating(true);
-             update();
-          }
-          
-        }
+	class MouseMotionListener extends MouseMotionAdapter {
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			trackball.drag(e.getX(), e.getY());
+			trackball.setRotating(true);
+			interact();
+			update();
+		}
+	}
     
     
     class MouseWheelHandler implements MouseWheelListener {
@@ -169,6 +187,7 @@ public class Visualization implements GLEventListener, TFChangeListener {
             } else { // down
                 fov++;
             }
+			interact();
             update();
         }
         
