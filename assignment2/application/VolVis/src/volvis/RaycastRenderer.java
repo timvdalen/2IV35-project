@@ -24,6 +24,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     RaycastRendererPanel panel;
     TransferFunction tFunc;
     TransferFunctionEditor tfEditor;
+    double maximum;
 
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
@@ -32,7 +33,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 
     public void setVolume(Volume vol) {
         volume = vol;
-
+        maximum = vol.getMaximum();
         // set up image for storing the resulting rendering
         // the image width and height are equal to the length of the volume diagonal
         int imageSize = (int) Math.floor(Math.sqrt(vol.getDimX() * vol.getDimX() + vol.getDimY() * vol.getDimY()
@@ -128,8 +129,46 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 
 
     }
-
-    void mip(double[] viewMatrix,int res) {
+    
+    double getTriVoxel(double[] pixelCoord,int i ){
+        double[] xyz0 = new double[3];
+        double[] xyz1 = new double[3];
+        VectorMath.setVector(xyz0,(int)pixelCoord[0], (int)pixelCoord[1], (int)pixelCoord[2]);
+        VectorMath.setVector(xyz1,(int)xyz0[0]+i,(int)xyz0[1]+i,(int)xyz0[2]+i);
+        //On a periodic and cubic lattice, let x_d, y_d, 
+        //and z_d be the differences between each of x, y, z and the smaller coordinate related, that is:
+        double xd= (pixelCoord[0]-xyz0[0])/(xyz1[0]-xyz0[0]);
+        double yd= (pixelCoord[1]-xyz0[1])/(xyz1[1]-xyz0[1]);
+        double zd= (pixelCoord[2]-xyz0[2])/(xyz1[2]-xyz0[2]);
+        
+        double[] valuesCube = new double[8];
+        double[][] coords = new double[8][3];
+        coords[0] = new double[]{xyz0[0],xyz0[1],xyz0[2]};
+        coords[1] = new double[]{xyz0[0],xyz0[1],xyz1[2]};
+        coords[2] = new double[]{xyz0[0],xyz1[1],xyz0[2]};
+        coords[3] = new double[]{xyz0[0],xyz1[1],xyz1[2]};
+        coords[4] = new double[]{xyz1[0],xyz0[1],xyz0[2]};
+        coords[5] = new double[]{xyz1[0],xyz0[1],xyz1[2]};
+        coords[6] = new double[]{xyz1[0],xyz1[1],xyz0[2]};
+        coords[7] = new double[]{xyz1[0],xyz1[1],xyz1[2]};
+        for(int x =0;x<8;x++){
+            valuesCube[x]= getVoxel(coords[x]);
+        }
+        //where  x_0  indicates the lattice point below  x , and   x_1  indicates 
+        //the lattice point above  x  and similarly for y_0, y_1, z_0 and z_1.
+        //First we interpolate along x (imagine we are pushing the front face of the cube to the back), giving:
+        double c00 = valuesCube[0]*(1-xd)+valuesCube[4]*xd;
+        double c01 = valuesCube[1]*(1-xd)+valuesCube[5]*xd;
+        double c10 = valuesCube[2]*(1-xd)+valuesCube[6]*xd;
+        double c11 = valuesCube[3]*(1-xd)+valuesCube[7]*xd;
+        
+        double c0 = c00*(1-yd)+c10*yd;
+        double c1 = c01*(1-yd)+c11*yd;
+        return c0*(1-zd)+c1*zd;
+    }
+    
+    
+    void mip(double[] viewMatrix,int res,int samples) {
 
         // clear image
         for (int j = 0; j < image.getHeight(); j++) {
@@ -162,14 +201,15 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         for (int j = 0; j < (image.getHeight()/res); j++) {
             for (int i = 0; i < (image.getWidth()/res); i++) {
                 val = 0;
-                for(int k = 0; k<max;k++){
+                for(int k = -(int)(max/2); k<(max/2);k=k+samples){
                 pixelCoord[0] = uVec[0] * (res*i - imageCenter) + vVec[0] * (res*j - imageCenter)
-                        + viewVec[0]*k +volumeCenter[0];
+                        + (viewVec[0])*k +volumeCenter[0];
                 pixelCoord[1] = uVec[1] * (res*i - imageCenter) + vVec[1] * (res*j - imageCenter)
-                        + viewVec[1]*k +volumeCenter[1];
+                        + (viewVec[1])*k +volumeCenter[1];
                 pixelCoord[2] = uVec[2] * (res*i - imageCenter) + vVec[2] * (res*j - imageCenter)
-                        + viewVec[2]*k +volumeCenter[2];
-                    int x = getVoxel(pixelCoord);
+                        + (viewVec[2])*k +volumeCenter[2];
+                      int x  = (int)getTriVoxel(pixelCoord,1);
+                 //   int x = getVoxel(pixelCoord);
                     if(x > val){
                         val = x;
                         }
@@ -191,7 +231,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                 }
             }
         }
-
+      
 
     }
 
@@ -267,7 +307,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, viewMatrix, 0);
 
         long startTime = System.currentTimeMillis();
-        mip(viewMatrix, this.resolution);
+        mip(viewMatrix,this.resolution,this.resolution);
         long endTime = System.currentTimeMillis();
         double runningTime = (endTime - startTime);
         panel.setSpeedLabel(Double.toString(runningTime));
