@@ -137,8 +137,7 @@ public class Visualization implements GLEventListener, TFChangeListener {
 		@Override
 		public void run() {
 			for (int i = 0; i < renderers.size(); i++) {
-			   renderers.get(i).increaseResolution();
-			   renderers.get(i).decreaseResolution();
+			   
 			}
 			update();
 		}

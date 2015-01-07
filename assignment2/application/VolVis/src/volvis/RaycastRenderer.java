@@ -350,6 +350,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
             System.out.println("some OpenGL error: " + gl.glGetError());
         }
 
+		this.increaseResolution();
+		this.decreaseResolution();
     }
     private BufferedImage image;
     private double[] viewMatrix = new double[4 * 4];
@@ -361,7 +363,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 	
 	@Override
 	protected boolean shouldDecreaseResolution() {
-		return !this.forceQuality && this.lastRenderTime > 350;
+		return !this.forceQuality && this.lastRenderTime > 700;
 	}
 
 	@Override
