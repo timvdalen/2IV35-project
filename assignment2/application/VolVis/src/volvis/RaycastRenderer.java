@@ -9,7 +9,11 @@ import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import gui.RaycastRendererPanel;
 import gui.TransferFunctionEditor;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.media.opengl.GL2;
+import javax.swing.SwingWorker;
 import util.TFChangeListener;
 import util.VectorMath;
 import volume.Volume;
@@ -18,7 +22,7 @@ import volume.Volume;
  *
  * @author michel
  */
-public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener {
+public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener, QualityForcible, BackgroundRunnable {
 
     private Volume volume = null;
     RaycastRendererPanel panel;
@@ -27,6 +31,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     double maximum;
 	double lastRenderTime;
 	private boolean forceQuality = false;
+	private boolean runInBackground = false;
 
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
@@ -170,8 +175,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     }
     
     
-    void mip(double[] viewMatrix,int res,int samples) {
-
+    BufferedImage mip(double[] viewMatrix,int res,int samples) {
+		BufferedImage image = new BufferedImage(this.image.getWidth(), this.image.getWidth(), BufferedImage.TYPE_INT_ARGB);
         // clear image
         for (int j = 0; j < image.getHeight(); j++) {
             for (int i = 0; i < image.getWidth(); i++) {
@@ -234,7 +239,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
             }
         }
       
-
+		return image;
     }
 
     private void drawBoundingBox(GL2 gl) {
@@ -308,12 +313,11 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, viewMatrix, 0);
 
-        long startTime = System.currentTimeMillis();
-        mip(viewMatrix,this.resolution,this.resolution);
-        long endTime = System.currentTimeMillis();
-        double runningTime = (endTime - startTime);
-        panel.setSpeedLabel(Double.toString(runningTime));
-		this.lastRenderTime = runningTime;
+		MipWorker mipWorker = new MipWorker();
+		mipWorker.execute();
+		if(!this.runInBackground){
+			mipWorker.done();
+		}
 
         Texture texture = AWTTextureIO.newTexture(gl.getGLProfile(), image, false);
 
@@ -349,9 +353,6 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         if (gl.glGetError() > 0) {
             System.out.println("some OpenGL error: " + gl.glGetError());
         }
-
-		this.increaseResolution();
-		this.decreaseResolution();
     }
     private BufferedImage image;
     private double[] viewMatrix = new double[4 * 4];
@@ -365,9 +366,40 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 	protected boolean shouldDecreaseResolution() {
 		return !this.forceQuality && this.lastRenderTime > 700;
 	}
-
+	
 	@Override
 	public void forceQuality(boolean force) {
 		this.forceQuality = force;
+	}
+	
+	@Override
+	public void runInBackground(boolean background){
+		this.runInBackground = background;
+	};
+	
+	private class MipWorker extends SwingWorker<BufferedImage, Void> {
+		@Override
+		protected BufferedImage doInBackground() {
+			long startTime = System.currentTimeMillis();
+			BufferedImage ret = mip(viewMatrix, resolution, resolution);
+			long endTime = System.currentTimeMillis();
+			double runningTime = (endTime - startTime);
+			lastRenderTime = runningTime;
+			return ret;
+		}
+		
+		@Override
+		protected void done(){
+			try {
+				image = get();
+				panel.setSpeedLabel(Double.toString(lastRenderTime));
+				increaseResolution();
+				decreaseResolution();
+			} catch (InterruptedException ex) {
+				Logger.getLogger(RaycastRenderer.class.getName()).log(Level.SEVERE, null, ex);
+			} catch (ExecutionException ex) {
+				Logger.getLogger(RaycastRenderer.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		}
 	}
 }
