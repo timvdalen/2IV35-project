@@ -22,8 +22,13 @@ import volume.Volume;
  *
  * @author michel
  */
-public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener, QualityForcible, BackgroundRunnable {
-
+public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener, QualityForcible, BackgroundRunnable, CanInterpolate {
+	public enum RaycastMethod{
+		Slicer,
+		MIP,
+		CTF
+	}
+	
     private Volume volume = null;
     RaycastRendererPanel panel;
     TransferFunction tFunc;
@@ -32,6 +37,10 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 	double lastRenderTime;
 	private boolean forceQuality = false;
 	private boolean runInBackground = false;
+	private boolean interpolate = true;
+	private RaycastMethod method = RaycastMethod.MIP;
+	
+	private RaycastWorker raycastWorker;
 
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
@@ -84,8 +93,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     }
       
     
-    void slicer(double[] viewMatrix) {
-
+    BufferedImage slicer(double[] viewMatrix) {
+		BufferedImage image = new BufferedImage(this.image.getWidth(), this.image.getWidth(), BufferedImage.TYPE_INT_ARGB);
         // clear image
         for (int j = 0; j < image.getHeight(); j++) {
             for (int i = 0; i < image.getWidth(); i++) {
@@ -120,7 +129,15 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                 pixelCoord[2] = uVec[2] * (i - imageCenter) + vVec[2] * (j - imageCenter)
                         + volumeCenter[2];
 
-                int val = getVoxel(pixelCoord);
+                int val;
+				if (this.interpolate){
+					val = (int) getTriVoxel(pixelCoord, 1);
+				}else{
+					val = getVoxel(pixelCoord);
+				}
+				if (val < 0){
+					val = 0;
+				}
                 // Apply the transfer function to obtain a color
                 TFColor voxelColor = tFunc.getColor(val);
                 
@@ -134,7 +151,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
             }
         }
 
-
+		return image;
     }
     
     double getTriVoxel(double[] pixelCoord,int i ){
@@ -239,7 +256,11 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                         + (viewVec[1])*k +volumeCenter[1];
                     pixelCoord[2] = uVec[2] * (res*i - imageCenter) + vVec[2] * (res*j - imageCenter)
                         + (viewVec[2])*k +volumeCenter[2];
-                    val = getVoxel(pixelCoord);
+					if (this.interpolate){
+						val = (int) getTriVoxel(pixelCoord, 1);
+					}else{
+						val = getVoxel(pixelCoord);
+					}
                     TFColor voxelColor = tFunc.getColor(val);
                     voxValuesa[k] = voxelColor.a;
                     voxValuesb[k] = voxelColor.b;
@@ -307,8 +328,12 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                         + (viewVec[1])*k +volumeCenter[1];
                 pixelCoord[2] = uVec[2] * (res*i - imageCenter) + vVec[2] * (res*j - imageCenter)
                         + (viewVec[2])*k +volumeCenter[2];
-                      int x  = (int)getTriVoxel(pixelCoord,1);
-                 //   int x = getVoxel(pixelCoord);
+					int x;
+					if (this.interpolate){
+					  x = (int) getTriVoxel(pixelCoord, 1);
+					}else{
+					  x = getVoxel(pixelCoord);
+					}
                     if(x > val){
                         val = x;
                         }
@@ -406,11 +431,13 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         drawBoundingBox(gl);
 
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, viewMatrix, 0);
-
-		MipWorker mipWorker = new MipWorker();
-		mipWorker.execute();
-		if(!this.runInBackground){
-			mipWorker.done();
+		
+		if (raycastWorker == null || raycastWorker.isDone()) {
+			raycastWorker = new RaycastWorker();
+			raycastWorker.execute();
+			if(!this.runInBackground){
+				raycastWorker.done();
+			}
 		}
 
         Texture texture = AWTTextureIO.newTexture(gl.getGLProfile(), image, false);
@@ -471,11 +498,33 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 		this.runInBackground = background;
 	};
 	
-	private class MipWorker extends SwingWorker<BufferedImage, Void> {
+	@Override
+	public void setInterpolate(boolean interpolate) {
+		this.interpolate = interpolate;
+	}
+	
+	public void setRaycastMethod(RaycastMethod method){
+		this.method = method;
+	}
+	
+	private class RaycastWorker extends SwingWorker<BufferedImage, Void> {
 		@Override
 		protected BufferedImage doInBackground() {
 			long startTime = System.currentTimeMillis();
-			BufferedImage ret = ctf(viewMatrix, resolution);
+			BufferedImage ret;
+			switch(method){
+				case Slicer:
+					ret = slicer(viewMatrix);
+					break;
+				case MIP:
+					ret = mip(viewMatrix, resolution, resolution);
+					break;
+				case CTF:
+					ret = ctf(viewMatrix, resolution);
+					break;
+				default:
+					ret = null;
+			}
 			long endTime = System.currentTimeMillis();
 			double runningTime = (endTime - startTime);
 			lastRenderTime = runningTime;
