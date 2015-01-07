@@ -25,6 +25,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     TransferFunction tFunc;
     TransferFunctionEditor tfEditor;
     double maximum;
+	double lastRenderTime;
 
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
@@ -47,7 +48,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         tfEditor = new TransferFunctionEditor(tFunc, volume.getHistogram());
         panel.setTransferFunctionEditor(tfEditor);
 
-
+		this.resetResolution();
     }
 
     @Override
@@ -311,6 +312,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         long endTime = System.currentTimeMillis();
         double runningTime = (endTime - startTime);
         panel.setSpeedLabel(Double.toString(runningTime));
+		this.lastRenderTime = runningTime;
 
         Texture texture = AWTTextureIO.newTexture(gl.getGLProfile(), image, false);
 
@@ -350,4 +352,14 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     }
     private BufferedImage image;
     private double[] viewMatrix = new double[4 * 4];
+
+	@Override
+	protected boolean shouldIncreaseResolution() {
+		return this.lastRenderTime < 350;
+	}
+	
+	@Override
+	protected boolean shouldDecreaseResolution() {
+		return this.lastRenderTime > 350;
+	}
 }
