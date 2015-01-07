@@ -174,6 +174,98 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         return c0*(1-zd)+c1*zd;
     }
     
+    TFColor getColor(double[]colr,double[]colg,double[]colb,double[]cola){
+         int length = colr.length;
+         double mult=1;
+         double r=0;
+         double b=0;
+         double g=0;
+         double a=0;
+         for(int i=0;i<length;i++ ){
+             mult =1;
+             for(int j=i+1;j<length;j++ ){
+                 mult *=(1-cola[j]);
+             }
+
+            r+= colr[i]*mult;
+            b+= colb[i]*mult;
+            a+= cola[i]*mult;
+            g+= colg[i]*mult;
+         }
+        return new TFColor(r,g,b,a);
+    }
+    
+     BufferedImage ctf(double[] viewMatrix,int res) {
+		BufferedImage image = new BufferedImage(this.image.getWidth(), this.image.getWidth(), BufferedImage.TYPE_INT_ARGB);
+        // clear image
+        for (int j = 0; j < image.getHeight(); j++) {
+            for (int i = 0; i < image.getWidth(); i++) {
+                image.setRGB(i, j, 0);
+            }
+        }
+
+        // vector uVec and vVec define a plane through the origin, 
+        // perpendicular to the view vector viewVec
+        double[] viewVec = new double[3];
+        double[] uVec = new double[3];
+        double[] vVec = new double[3];
+        VectorMath.setVector(viewVec, viewMatrix[2], viewMatrix[6], viewMatrix[10]);
+        VectorMath.setVector(uVec, viewMatrix[0], viewMatrix[4], viewMatrix[8]);
+        VectorMath.setVector(vVec, viewMatrix[1], viewMatrix[5], viewMatrix[9]);
+        
+        // image is square
+        int imageCenter = image.getWidth() / 2;
+        
+        double[] pixelCoord = new double[3];
+        double[] volumeCenter = new double[3];
+        VectorMath.setVector(volumeCenter, volume.getDimX() / 2, volume.getDimY() / 2, volume.getDimZ() / 2);
+        int val = 0;
+        // sample on a plane through the origin of the volume data
+        
+        double max = Math.abs(viewVec[0]*volume.getDimX())
+                + Math.abs(viewVec[1]*volume.getDimY()) 
+                + Math.abs(viewVec[2]*volume.getDimZ());
+        for (int j = 0; j < (image.getHeight()/res); j++) {
+            for (int i = 0; i < (image.getWidth()/res); i++) {
+                val = 0;
+                double[] voxValuesa = new double[200];
+                double[] voxValuesb = new double[200];
+                double[] voxValuesr = new double[200];
+                double[] voxValuesg = new double[200];
+                for(int k = 0; k<200;k++){
+                    pixelCoord[0] = uVec[0] * (res*i - imageCenter) + vVec[0] * (res*j - imageCenter)
+                        + (viewVec[0])*k +volumeCenter[0];
+                    pixelCoord[1] = uVec[1] * (res*i - imageCenter) + vVec[1] * (res*j - imageCenter)
+                        + (viewVec[1])*k +volumeCenter[1];
+                    pixelCoord[2] = uVec[2] * (res*i - imageCenter) + vVec[2] * (res*j - imageCenter)
+                        + (viewVec[2])*k +volumeCenter[2];
+                    val = getVoxel(pixelCoord);
+                    TFColor voxelColor = tFunc.getColor(val);
+                    voxValuesa[k] = voxelColor.a;
+                    voxValuesb[k] = voxelColor.b;
+                    voxValuesr[k] = voxelColor.r;
+                    voxValuesg[k] = voxelColor.g;
+                }
+                // Apply the transfer function to obtain a color
+                TFColor voxelColor = getColor(voxValuesr,voxValuesg,voxValuesb,voxValuesa);
+                
+                // BufferedImage expects a pixel color packed as ARGB in an int
+                int c_alpha = voxelColor.a <= 1.0 ? (int) Math.floor(voxelColor.a * 255) : 255;
+                int c_red = voxelColor.r <= 1.0 ? (int) Math.floor(voxelColor.r * 255) : 255;
+                int c_green = voxelColor.g <= 1.0 ? (int) Math.floor(voxelColor.g * 255) : 255;
+                int c_blue = voxelColor.b <= 1.0 ? (int) Math.floor(voxelColor.b * 255) : 255;
+                int pixelColor = (c_alpha << 24) | (c_red << 16) | (c_green << 8) | c_blue;
+                
+                for (int x = 0; x < res; x++) {
+                    for (int y = 0; y < res; y++) {
+                        image.setRGB((i*res)+x,(j*res)+y, pixelColor);
+                        }
+                }
+            }
+        }
+      
+		return image;
+    }
     
     BufferedImage mip(double[] viewMatrix,int res,int samples) {
 		BufferedImage image = new BufferedImage(this.image.getWidth(), this.image.getWidth(), BufferedImage.TYPE_INT_ARGB);
@@ -241,6 +333,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
       
 		return image;
     }
+    
+    
 
     private void drawBoundingBox(GL2 gl) {
         gl.glPushAttrib(GL2.GL_CURRENT_BIT);
@@ -381,7 +475,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 		@Override
 		protected BufferedImage doInBackground() {
 			long startTime = System.currentTimeMillis();
-			BufferedImage ret = mip(viewMatrix, resolution, resolution);
+			BufferedImage ret = ctf(viewMatrix, resolution);
 			long endTime = System.currentTimeMillis();
 			double runningTime = (endTime - startTime);
 			lastRenderTime = runningTime;
