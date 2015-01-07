@@ -26,6 +26,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     TransferFunctionEditor tfEditor;
     double maximum;
 	double lastRenderTime;
+	private boolean forceQuality = false;
 
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
@@ -355,11 +356,16 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 
 	@Override
 	protected boolean shouldIncreaseResolution() {
-		return this.lastRenderTime < 350;
+		return this.forceQuality || this.lastRenderTime < 350;
 	}
 	
 	@Override
 	protected boolean shouldDecreaseResolution() {
-		return this.lastRenderTime > 350;
+		return !this.forceQuality && this.lastRenderTime > 350;
+	}
+
+	@Override
+	public void forceQuality(boolean force) {
+		this.forceQuality = force;
 	}
 }

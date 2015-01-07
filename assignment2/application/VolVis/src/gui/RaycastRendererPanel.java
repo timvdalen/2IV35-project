@@ -51,6 +51,7 @@ public class RaycastRendererPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         renderingSpeedLabel = new javax.swing.JLabel();
         tfPanel = new javax.swing.JPanel();
+        chckQuality = new javax.swing.JCheckBox();
 
         jLabel1.setText("Rendering time (ms):");
 
@@ -64,8 +65,15 @@ public class RaycastRendererPanel extends javax.swing.JPanel {
         );
         tfPanelLayout.setVerticalGroup(
             tfPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 331, Short.MAX_VALUE)
+            .addGap(0, 330, Short.MAX_VALUE)
         );
+
+        chckQuality.setText("Force quality");
+        chckQuality.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                chckQualityStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -76,7 +84,9 @@ public class RaycastRendererPanel extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(renderingSpeedLabel)
-                .addContainerGap(339, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE)
+                .addComponent(chckQuality, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addComponent(tfPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -85,12 +95,19 @@ public class RaycastRendererPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(renderingSpeedLabel))
+                    .addComponent(renderingSpeedLabel)
+                    .addComponent(chckQuality))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tfPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void chckQualityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chckQualityStateChanged
+        this.renderer.forceQuality(((javax.swing.JCheckBox) evt.getSource()).isSelected());
+    }//GEN-LAST:event_chckQualityStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox chckQuality;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel renderingSpeedLabel;
     private javax.swing.JPanel tfPanel;

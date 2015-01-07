@@ -4,7 +4,7 @@ package volvis;
  *
  * @author Tim
  */
-public abstract class ResolutionRenderer extends Renderer {
+public abstract class ResolutionRenderer extends Renderer implements QualityForcible{
 	private int INITIAL_RES = 16;
 	protected int resolution = INITIAL_RES;
 	
@@ -19,10 +19,10 @@ public abstract class ResolutionRenderer extends Renderer {
 	}
 	
 	public void decreaseResolution(){
-		if(this.resolution*2 >= INITIAL_RES || !shouldDecreaseResolution()){
+		if(this.resolution >= INITIAL_RES || !shouldDecreaseResolution()){
 			return;
 		}
-		this.resolution *= 2;
+		this.resolution += 1;
 	}
 	
 	public void resetResolution(){
