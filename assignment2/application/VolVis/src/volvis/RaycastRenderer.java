@@ -287,6 +287,28 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
       
 		return image;
     }
+     
+    TFColor getOpacityWeighting(double[] pixelCoord,int fmin, int fmax, double omin, double omax){
+        int val = getVoxel(pixelCoord);
+        TFColor voxelColor = tFunc.getColor(val);
+        double a = 0;
+        if(val< fmin || val>fmax){
+        a = 0;
+        }
+        else{
+        int x1 = getVoxel(new double[]{pixelCoord[0]+0.5,pixelCoord[1],pixelCoord[2]});
+        int x2 = getVoxel(new double[]{pixelCoord[0]-0.5,pixelCoord[1],pixelCoord[2]});
+        int y1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]+0.5,pixelCoord[2]});
+        int y2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]-0.5,pixelCoord[2]});
+        int z1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]+0.5});
+        int z2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]-0.5});
+        double[] gradientV = new double[3];
+        VectorMath.setVector(gradientV, (x1-x2),(y1-y2),(z1-z2));
+        double gradient = VectorMath.length(gradientV);
+        a = gradient * (omax*((val-fmin)/fmax-fmin)+omin*((fmax-val)/fmax-fmin));
+        }
+        return(new TFColor(voxelColor.r,voxelColor.g,voxelColor.b,a));
+    }
     
     BufferedImage mip(double[] viewMatrix,int res,int samples) {
 		BufferedImage image = new BufferedImage(this.image.getWidth(), this.image.getWidth(), BufferedImage.TYPE_INT_ARGB);
@@ -310,11 +332,11 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         int imageCenter = image.getWidth() / 2;
         
         double[] pixelCoord = new double[3];
+        double[] pixelCoordMax = new double[3];
         double[] volumeCenter = new double[3];
         VectorMath.setVector(volumeCenter, volume.getDimX() / 2, volume.getDimY() / 2, volume.getDimZ() / 2);
         int val = 0;
         // sample on a plane through the origin of the volume data
-        
         double max = Math.abs(viewVec[0]*volume.getDimX())
                 + Math.abs(viewVec[1]*volume.getDimY()) 
                 + Math.abs(viewVec[2]*volume.getDimZ());
@@ -336,10 +358,17 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 					}
                     if(x > val){
                         val = x;
+                        VectorMath.setVector(pixelCoordMax, (int)pixelCoord[0],(int)pixelCoord[1],(int)pixelCoord[2]); 
                         }
                 }
                 // Apply the transfer function to obtain a color
-                TFColor voxelColor = tFunc.getColor(val);
+                TFColor voxelColor;
+                if(true){
+                    voxelColor = getOpacityWeighting(pixelCoordMax,180,240,0.2,0.8);
+                }
+                else{
+                    voxelColor = tFunc.getColor(val);
+                }
                 
                 // BufferedImage expects a pixel color packed as ARGB in an int
                 int c_alpha = voxelColor.a <= 1.0 ? (int) Math.floor(voxelColor.a * 255) : 255;
