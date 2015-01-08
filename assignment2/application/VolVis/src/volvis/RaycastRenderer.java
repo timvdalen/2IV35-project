@@ -292,20 +292,31 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         int val = getVoxel(pixelCoord);
         TFColor voxelColor = tFunc.getColor(val);
         double a = 0;
-        if(val< fmin || val>fmax){
-        a = 0;
+        if(val<fmin){
+            a = 0;
         }
+        else if(val>fmax){
+            a = 0;
+         }
         else{
-        int x1 = getVoxel(new double[]{pixelCoord[0]+0.5,pixelCoord[1],pixelCoord[2]});
-        int x2 = getVoxel(new double[]{pixelCoord[0]-0.5,pixelCoord[1],pixelCoord[2]});
-        int y1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]+0.5,pixelCoord[2]});
-        int y2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]-0.5,pixelCoord[2]});
-        int z1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]+0.5});
-        int z2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]-0.5});
+        int x1 = getVoxel(new double[]{pixelCoord[0]+1,pixelCoord[1],pixelCoord[2]});
+        int x2 = getVoxel(new double[]{pixelCoord[0]-1,pixelCoord[1],pixelCoord[2]});
+        int y1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]+1,pixelCoord[2]});
+        int y2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1]-1,pixelCoord[2]});
+        int z1 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]+1});
+        int z2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]-1});
         double[] gradientV = new double[3];
-        VectorMath.setVector(gradientV, (x1-x2),(y1-y2),(z1-z2));
+        VectorMath.setVector(gradientV, 0.5*(x1-x2),0.5*(y1-y2),0.5*(z1-z2));
         double gradient = VectorMath.length(gradientV);
-        a = gradient * (omax*((val-fmin)/fmax-fmin)+omin*((fmax-val)/fmax-fmin));
+        
+        double max = ((val-fmin));
+        double min = ((fmax-val));
+        double dif = fmax - min;
+        max /= dif;
+        min /= dif;
+        max *= omax;
+        min *= omin;
+        a = gradient * (max+min);
         }
         return(new TFColor(voxelColor.r,voxelColor.g,voxelColor.b,a));
     }
@@ -364,7 +375,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                 // Apply the transfer function to obtain a color
                 TFColor voxelColor;
                 if(true){
-                    voxelColor = getOpacityWeighting(pixelCoordMax,180,240,0.2,0.8);
+                    voxelColor = getOpacityWeighting(pixelCoordMax,180,240,0.6,0.8);
                 }
                 else{
                     voxelColor = tFunc.getColor(val);
