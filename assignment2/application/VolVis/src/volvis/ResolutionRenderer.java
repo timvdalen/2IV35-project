@@ -7,6 +7,7 @@ package volvis;
 public abstract class ResolutionRenderer extends Renderer implements QualityForcible{
 	private int INITIAL_RES = 16;
 	protected int resolution = INITIAL_RES;
+	protected boolean reset = false;
 	
 	protected abstract boolean shouldIncreaseResolution();
 	protected abstract boolean shouldDecreaseResolution();
@@ -27,5 +28,6 @@ public abstract class ResolutionRenderer extends Renderer implements QualityForc
 	
 	public void resetResolution(){
 		this.resolution = INITIAL_RES;
+		this.reset = true;
 	}
 }

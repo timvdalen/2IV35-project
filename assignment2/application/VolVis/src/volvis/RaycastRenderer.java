@@ -490,6 +490,12 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 
         gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, viewMatrix, 0);
 		
+		if (reset && raycastWorker != null) {
+			raycastWorker.cancel(true);
+			raycastWorker = null;
+			reset = false;
+		}
+		
 		if (raycastWorker == null || raycastWorker.isDone()) {
 			raycastWorker = new RaycastWorker();
 			raycastWorker.execute();
@@ -596,11 +602,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 				panel.setSpeedLabel(Double.toString(lastRenderTime));
 				increaseResolution();
 				decreaseResolution();
-			} catch (InterruptedException ex) {
-				Logger.getLogger(RaycastRenderer.class.getName()).log(Level.SEVERE, null, ex);
-			} catch (ExecutionException ex) {
-				Logger.getLogger(RaycastRenderer.class.getName()).log(Level.SEVERE, null, ex);
-			}
+			} catch (InterruptedException ex) {}
+			catch (ExecutionException ex) {}
 		}
 	}
 }
