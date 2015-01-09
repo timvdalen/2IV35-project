@@ -328,6 +328,9 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         max *= omax;
         min *= omin;
         a = gradient * (max+min);
+        if(a>1){
+            System.out.println("Nooosee" + a + "grad" + gradient);
+        }
         }
         return(new TFColor(voxelColor.r,voxelColor.g,voxelColor.b,a));
     }
@@ -385,8 +388,12 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                 }
                 // Apply the transfer function to obtain a color
                 TFColor voxelColor;
-                if(true){
-                    voxelColor = getOpacityWeighting(pixelCoordMax,180,240,0.6,0.8);
+                if(settings.isUseGradient()){
+                    voxelColor = getOpacityWeighting(pixelCoordMax,
+                                                     settings.getFmin(),
+                                                     settings.getFmax(),
+                                                     settings.getOmin(),
+                                                     settings.getOmax());
                 }
                 else{
                     voxelColor = tFunc.getColor(val);
