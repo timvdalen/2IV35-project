@@ -4,6 +4,7 @@
  */
 package gui;
 
+import volume.Volume;
 import volvis.RendererSettings;
 
 /**
@@ -27,6 +28,13 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
 		slFmax.setValue(this.settings.getFmax());
 		slOmin.setValue((int)(this.settings.getOmin() * 100));
 		slOmax.setValue((int)(this.settings.getOmax() * 100));
+	}
+	
+	public void setVolume(Volume v){
+		slFmin.setMinimum(v.getMinimum());
+		slFmax.setMinimum(v.getMinimum());
+		slFmin.setMaximum(v.getMaximum());
+		slFmax.setMaximum(v.getMaximum());
 	}
 
 	/**

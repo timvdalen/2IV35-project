@@ -70,6 +70,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         tfEditor = new TransferFunctionEditor(tFunc, volume.getHistogram());
         panel.setTransferFunctionEditor(tfEditor);
 
+		this.settingsPanel.setVolume(vol);
+		
 		this.resetResolution();
     }
 
