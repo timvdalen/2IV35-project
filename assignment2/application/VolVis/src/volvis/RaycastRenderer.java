@@ -7,6 +7,7 @@ package volvis;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import gui.RaycastRendererPanel;
+import gui.RendererSettingsPanel;
 import gui.TransferFunctionEditor;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutionException;
@@ -33,6 +34,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 	
     private Volume volume = null;
     RaycastRendererPanel panel;
+	RendererSettingsPanel settingsPanel;
     TransferFunction tFunc;
     TransferFunctionEditor tfEditor;
     double maximum;
@@ -49,6 +51,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         panel.setSpeedLabel("0");
 		
 		this.settings = new RendererSettings();
+		settingsPanel = new RendererSettingsPanel(this.settings);
     }
 
     public void setVolume(Volume vol) {
@@ -80,6 +83,10 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     public RaycastRendererPanel getPanel() {
         return panel;
     }
+	
+	public RendererSettingsPanel getSettingsPanel() {
+		return settingsPanel;
+	}
 
     // get a voxel from the volume data by nearest neighbor interpolation
     short getVoxel(double[] coord) {

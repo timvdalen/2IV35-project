@@ -41,7 +41,7 @@ public class VolVisApplication extends javax.swing.JFrame {
         visualization.addRenderer(raycastRenderer);
         raycastRenderer.addTFChangeListener(visualization);
         tabbedPanel.addTab("Raycaster", raycastRenderer.getPanel());
-        
+        tabbedPanel.addTab("Renderer", raycastRenderer.getSettingsPanel());
     }
 
     /**
