@@ -29,6 +29,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 		CTF
 	}
 	
+	public RendererSettings settings;
+	
     private Volume volume = null;
     RaycastRendererPanel panel;
     TransferFunction tFunc;
@@ -45,6 +47,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
     public RaycastRenderer() {
         panel = new RaycastRendererPanel(this);
         panel.setSpeedLabel("0");
+		
+		this.settings = new RendererSettings();
     }
 
     public void setVolume(Volume vol) {
