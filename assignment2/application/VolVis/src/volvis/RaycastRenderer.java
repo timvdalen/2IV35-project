@@ -321,7 +321,6 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         int z2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]-1});
         double[] gradientV = new double[3];
         VectorMath.setVector(gradientV, 0.5*(x1-x2),0.5*(y1-y2),0.5*(z1-z2));
-		System.out.println("Factor: " + this.settings.getFactor());
         double gradient = VectorMath.length(gradientV)/this.settings.getFactor();
         
         double max = ((val-fmin));
@@ -332,9 +331,6 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         max *= omax;
         min *= omin;
         a = gradient * (max+min);
-        if(a>1){
-            //System.out.println("Nooosee" + a + "grad" + gradient);
-        }
         }
         return(new TFColor(voxelColor.r,voxelColor.g,voxelColor.b,a));
     }
@@ -470,11 +466,21 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
                     if(x > settings.getFirstMin()){
                         val = x;
                         k = (int)max;
+                        pixelCoordMax = pixelCoord;
                         }
                 }
                 // Apply the transfer function to obtain a color
                 TFColor voxelColor;
-                voxelColor = tFunc.getColor(val);
+                if(settings.isUseGradient()){
+                    voxelColor = getOpacityWeighting(pixelCoordMax,
+                                                     settings.getFmin(),
+                                                     settings.getFmax(),
+                                                     settings.getOmin(),
+                                                     settings.getOmax());
+                }
+                else{
+                    voxelColor = tFunc.getColor(val);
+                }
                 
                 // BufferedImage expects a pixel color packed as ARGB in an int
                 int c_alpha = voxelColor.a <= 1.0 ? (int) Math.floor(voxelColor.a * 255) : 255;
