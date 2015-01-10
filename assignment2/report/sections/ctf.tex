@@ -11,7 +11,23 @@ We were interested in what would happen if we compute it the other way around, s
 $$\sum_{i=0}^{n-1} c_{i}\Pi_{j=i+1}^{n-1}(1-\tau_{j})  $$. 
 We also implemented this function: \\
 $$\sum_{i=n-1}^{0} c_{i}\Pi_{j=i-1}^{0}(1-\tau_{j})  $$
-In the Section~\ref{Sec:Com} we will compare both functions.
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{orange_btf}
+		\caption{The orange with the back to front composite function}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{orange_ftb}
+		\caption{The orange with the front to back composite function}
+	\end{subfigure}
+	
+	\caption{A comparison of rendering \texttt{orange.fld} with the front to back and back to front composite transfer functions}
+	\label{fig:ctf:comp}
+\end{figure}
+As you can see in figure~\ref{fig:ctf:comp}, there are major differences between the front to back and back to front composite transfer functions.
+In Section~\ref{Sec:Com} we will compare both functions and analyse their differences.
 
 
 
