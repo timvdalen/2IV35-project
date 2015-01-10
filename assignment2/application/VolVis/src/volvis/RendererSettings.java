@@ -6,12 +6,14 @@ package volvis;
  */
 public class RendererSettings {
 	private int fmin;
-        private int firstMin;
+	private int firstMin;
 	private int fmax;
 	private double omin;
 	private double omax;
 	
 	private boolean useGradient;
+	
+	private double factor;
 	
 	public RendererSettings(){
 		this.fmin = 180;
@@ -20,6 +22,8 @@ public class RendererSettings {
 		this.omax = 0.8;
 		this.firstMin = 30;
 		this.useGradient = true;
+		
+		this.factor = 1.0;
 	}
 
 	public int getFmin() {
@@ -30,7 +34,7 @@ public class RendererSettings {
 		this.fmin = fmin;
 	}
         
-        public int getFirstMin() {
+	public int getFirstMin() {
 		return firstMin;
 	}
 
@@ -69,4 +73,13 @@ public class RendererSettings {
 	public void setUseGradient(boolean useGradient) {
 		this.useGradient = useGradient;
 	}
+
+	public double getFactor() {
+		return factor;
+	}
+
+	public void setFactor(double factor) {
+		this.factor = factor;
+	}
+	
 }

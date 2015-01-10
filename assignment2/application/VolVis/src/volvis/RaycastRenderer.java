@@ -321,7 +321,8 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         int z2 = getVoxel(new double[]{pixelCoord[0],pixelCoord[1],pixelCoord[2]-1});
         double[] gradientV = new double[3];
         VectorMath.setVector(gradientV, 0.5*(x1-x2),0.5*(y1-y2),0.5*(z1-z2));
-        double gradient = VectorMath.length(gradientV);
+		System.out.println("Factor: " + this.settings.getFactor());
+        double gradient = VectorMath.length(gradientV)/this.settings.getFactor();
         
         double max = ((val-fmin));
         double min = ((fmax-val));
@@ -332,7 +333,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         min *= omin;
         a = gradient * (max+min);
         if(a>1){
-            System.out.println("Nooosee" + a + "grad" + gradient);
+            //System.out.println("Nooosee" + a + "grad" + gradient);
         }
         }
         return(new TFColor(voxelColor.r,voxelColor.g,voxelColor.b,a));
@@ -384,7 +385,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 					}else{
 					  x = getVoxel(pixelCoord);
 					}
-                                        System.out.println(x);   
+                                        //System.out.println(x);   
                     if(x > val){
                         val = x;
                         VectorMath.setVector(pixelCoordMax, (int)pixelCoord[0],(int)pixelCoord[1],(int)pixelCoord[2]); 

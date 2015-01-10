@@ -24,10 +24,11 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
 		
 		chkUseGradientOpacity.setSelected(this.settings.isUseGradient());
 		slFmin.setValue(this.settings.getFmin());
-                slFmin1.setValue(this.settings.getFirstMin());
+		slFmin1.setValue(this.settings.getFirstMin());
 		slFmax.setValue(this.settings.getFmax());
 		slOmin.setValue((int)(this.settings.getOmin() * 100));
 		slOmax.setValue((int)(this.settings.getOmax() * 100));
+		slFactor.setValue((int)(this.settings.getFactor() * 100));
 	}
 	
 	public void setVolume(Volume v){
@@ -62,6 +63,9 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
         txtOmax = new javax.swing.JTextField();
         lblUseGradientOpacity = new javax.swing.JLabel();
         chkUseGradientOpacity = new javax.swing.JCheckBox();
+        lblFactor = new javax.swing.JLabel();
+        slFactor = new javax.swing.JSlider();
+        txtFactor = new javax.swing.JTextField();
         txtFmin1 = new javax.swing.JTextField();
         slFmin1 = new javax.swing.JSlider();
         lblFmin1 = new javax.swing.JLabel();
@@ -92,12 +96,6 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slFmin, org.jdesktop.beansbinding.ELProperty.create("${value}"), txtFmin, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-
-        txtFmin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFminActionPerformed(evt);
-            }
-        });
 
         txtOmin.setEditable(false);
 
@@ -149,6 +147,22 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        lblFactor.setText("Factor");
+
+        slFactor.setMaximum(1000);
+        slFactor.setToolTipText("");
+        slFactor.setValue(100);
+        slFactor.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slFactorStateChanged(evt);
+            }
+        });
+
+        txtFactor.setEditable(false);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slFactor, org.jdesktop.beansbinding.ELProperty.create("${value/100}"), txtFactor, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         javax.swing.GroupLayout pnlOpacityLayout = new javax.swing.GroupLayout(pnlOpacity);
         pnlOpacity.setLayout(pnlOpacityLayout);
         pnlOpacityLayout.setHorizontalGroup(
@@ -184,16 +198,22 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                                 .addComponent(slFmin, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtFmin, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(chkUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(chkUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOpacityLayout.createSequentialGroup()
+                        .addComponent(lblFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(slFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pnlOpacityLayout.setVerticalGroup(
             pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOpacityLayout.createSequentialGroup()
+            .addGroup(pnlOpacityLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(chkUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblUseGradientOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(slFmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -214,6 +234,11 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                     .addComponent(slOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtOmax, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(slFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -221,12 +246,6 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slFmin1, org.jdesktop.beansbinding.ELProperty.create("${value}"), txtFmin1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-
-        txtFmin1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFmin1ActionPerformed(evt);
-            }
-        });
 
         slFmin1.setMaximum(255);
         slFmin1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -244,28 +263,26 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addComponent(lblFmin1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(slFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13))
-                    .addComponent(pnlOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(slFmin1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -276,7 +293,7 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_slFminStateChanged
 
     private void slOminStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOminStateChanged
-        this.settings.setOmin(((javax.swing.JSlider) evt.getSource()).getValue());
+        this.settings.setOmin(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
     }//GEN-LAST:event_slOminStateChanged
 
     private void slFmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFmaxStateChanged
@@ -284,7 +301,7 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_slFmaxStateChanged
 
     private void slOmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOmaxStateChanged
-        this.settings.setOmax(((javax.swing.JSlider) evt.getSource()).getValue());
+        this.settings.setOmax(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
     }//GEN-LAST:event_slOmaxStateChanged
 
     private void chkUseGradientOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chkUseGradientOpacityStateChanged
@@ -295,17 +312,14 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
        this.settings.setFirstMin(((javax.swing.JSlider) evt.getSource()).getValue());
     }//GEN-LAST:event_slFmin1StateChanged
 
-    private void txtFmin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFmin1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFmin1ActionPerformed
-
-    private void txtFminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFminActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFminActionPerformed
+    private void slFactorStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFactorStateChanged
+        this.settings.setFactor(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
+    }//GEN-LAST:event_slFactorStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chkUseGradientOpacity;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblFactor;
     private javax.swing.JLabel lblFmax;
     private javax.swing.JLabel lblFmin;
     private javax.swing.JLabel lblFmin1;
@@ -313,11 +327,13 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblOmin;
     private javax.swing.JLabel lblUseGradientOpacity;
     private javax.swing.JPanel pnlOpacity;
+    private javax.swing.JSlider slFactor;
     private javax.swing.JSlider slFmax;
     private javax.swing.JSlider slFmin;
     private javax.swing.JSlider slFmin1;
     private javax.swing.JSlider slOmax;
     private javax.swing.JSlider slOmin;
+    private javax.swing.JTextField txtFactor;
     private javax.swing.JTextField txtFmax;
     private javax.swing.JTextField txtFmin;
     private javax.swing.JTextField txtFmin1;
