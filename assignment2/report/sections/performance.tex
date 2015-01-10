@@ -60,6 +60,22 @@ When the 'force quality' mode is turned on (controlled by a checkbox in the user
 
 Effectively, this technique allows for fast and responsive tweaking of parameters and position in order to design a good interpretation of the data, while also making it easy to render the resulting image at a high quality.
 
+\subsection{Exporting images}
+Another technique that allows users to quickly get to the right parameters but with a high quality image is exporting.
+
+When a user chooses to export, a new background render will be started with the current parameters, but with the highest resolution possible.
+The application can save to a PNG file.
+Note that transparency created by the transfer function will be maintained in the exported image file, making this a very useful tool for re-using generated images in some way (for example reports or web pages).
+
+An example export created by our application is given in Figure~\ref{fig:perf:export}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{fig_perf_export}
+	\caption{Exported render of \texttt{orange.fld}}
+	\label{fig:perf:export}
+\end{figure}
+
 \subsection{Background rendering}
 While inspecting the given project skeleton, we noticed that the calculation of the image is done during OpenGL rendering.
 This means that the calculated image is always 'up to date' with the set parameters, but it is not really nessecary to calculate the image at that time.
