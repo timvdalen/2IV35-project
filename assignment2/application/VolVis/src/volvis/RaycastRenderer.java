@@ -818,8 +818,11 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 				case MIP:
 					ret = mip(viewMatrix, 1, 1);
 					break;
-				case CTF:
-					ret = ctf(viewMatrix, 1);
+				case CTFFrontToBack:
+					ret = ctfFTB(viewMatrix, 1);
+					break;
+                                case CTFBackToFront:
+					ret = ctfBTF(viewMatrix, 1);
 					break;
                                 case First:
 					ret = first(viewMatrix, 1, 1);
