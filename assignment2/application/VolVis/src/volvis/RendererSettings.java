@@ -6,6 +6,7 @@ package volvis;
  */
 public class RendererSettings {
 	private int fmin;
+        private int firstMin;
 	private int fmax;
 	private double omin;
 	private double omax;
@@ -17,7 +18,7 @@ public class RendererSettings {
 		this.fmax = 240;
 		this.omin = 0.6;
 		this.omax = 0.8;
-		
+		this.firstMin = 30;
 		this.useGradient = true;
 	}
 
@@ -27,6 +28,14 @@ public class RendererSettings {
 
 	public void setFmin(int fmin) {
 		this.fmin = fmin;
+	}
+        
+        public int getFirstMin() {
+		return firstMin;
+	}
+
+	public void setFirstMin(int fmin) {
+		this.firstMin = fmin;
 	}
 
 	public int getFmax() {
