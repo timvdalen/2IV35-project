@@ -13,7 +13,8 @@ We can first interpolate in the x dimension , then in the y dimension and finall
 To do this we need the 8 surrounding points, that know their voxel. 
 Suppose we want to know the value of $X_{a},Y_{b},Z_{c}$. 
 Then we round down a,b,c to i,j and k. 
-We then have the surrounding points: $(X_{i},Y_{j},Z_{k}),(X_{i},Y_{j},Z_{k+1}),(X_{i},Y_{j+1},Z_{k}),(X_{i},Y_{j+1},Z_{k+1}),(X_{i+1},Y_{j},Z_{k}),(X_{i+1},Y_{j},Z_{k+1}),(X_{i+1},Y_{j+1},Z_{k}) ,(X_{i+1},Y_{j+1},Z_{k+1})$. 
+We then have the surrounding points: $(X_{i},Y_{j},Z_{k}), (X_{i},Y_{j}, Z_{k+1}), (X_{i},Y_{j+1},Z_{k}),
+ (X_{i},Y_{j+1},Z_{k+1}), (X_{i+1},Y_{j},Z_{k}), (X_{i+1},Y_{j},Z_{k+1})$, \\ $ (X_{i+1},Y_{j+1},Z_{k}) , (X_{i+1},Y_{j+1},Z_{k+1})$. 
 We can use this values to estimate the values for the x-axis. 
 We can do this in the same way as we did with one dimensional interpolation. 
 We take xd = (a-i) , because i+1 - i is always 1.
@@ -29,6 +30,23 @@ $c1= yd(c10)+(1-yd)(c11)$\\
 Finally we can do the same for the z-axis and then we have computed the voxel for the point we were interested in.\\
 $c= zd(c0)+(1-zd)(c1)$\\
 Which is the value we are looking for. 
+In figure~\ref{fig:interpolation} you can see a small difference between the first and second tomato.
+The second tomato has beter aliasing and less noise around the kernels. 
+However the slicer without tri-linear interpolation is a lot faster. 
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{tomato1}
+		\caption{Rendering with slicer and tri-linear interpolation disabled}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{tomato2}
+		\caption{Rendering with slicer and tri-linear interpolation enabled}
+	\end{subfigure}
+	\caption{A comparison of rendering \texttt{tomato.fld} with and without tri linear interpolation}
+	\label{fig:interpolation}
+\end{figure}
 \subsection{Maximum Intensity Projection}
 Maximum intensiyt projection, projects the point with the largest voxel along the viewing ray. 
 So we adjusted the slicer method that it looks at all points along the viewing ray and not just the point of that slice. 
