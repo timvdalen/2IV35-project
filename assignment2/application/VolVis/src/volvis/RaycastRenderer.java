@@ -10,9 +10,12 @@ import gui.RaycastRendererPanel;
 import gui.RendererSettingsPanel;
 import gui.TransferFunctionEditor;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.media.opengl.GL2;
 import javax.swing.SwingWorker;
 import util.TFChangeListener;
@@ -23,7 +26,8 @@ import volume.Volume;
  *
  * @author michel
  */
-public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener, QualityForcible, BackgroundRunnable, CanInterpolate {
+public class RaycastRenderer extends ResolutionRenderer implements TFChangeListener, QualityForcible, BackgroundRunnable, CanInterpolate, ImageExportable {
+
 	public enum RaycastMethod{
 		Slicer,
 		MIP,
@@ -52,7 +56,7 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
         panel.setSpeedLabel("0");
 		
 		this.settings = new RendererSettings();
-		settingsPanel = new RendererSettingsPanel(this.settings);
+		settingsPanel = new RendererSettingsPanel(this.settings, this);
     }
 
     public void setVolume(Volume vol) {
@@ -691,5 +695,51 @@ public class RaycastRenderer extends ResolutionRenderer implements TFChangeListe
 			} catch (InterruptedException ex) {}
 			catch (ExecutionException ex) {}
 		}
+	}
+	
+	private class RaycastExportWorker extends SwingWorker<BufferedImage, Void> {
+		private File f;
+		
+		private RaycastExportWorker(File f) {
+			this.f = f;
+		}
+		@Override
+		protected BufferedImage doInBackground() {
+			BufferedImage ret;
+			switch(method){
+				case Slicer:
+					ret = slicer(viewMatrix);
+					break;
+				case MIP:
+					ret = mip(viewMatrix, 1, 1);
+					break;
+				case CTF:
+					ret = ctf(viewMatrix, 1);
+					break;
+                                case First:
+					ret = first(viewMatrix, 1, 1);
+					break;
+				default:
+					ret = null;
+			}
+			return ret;
+		}
+		
+		@Override
+		protected void done(){
+			try {
+				BufferedImage image = get();
+				ImageIO.write(image, "png", f);
+				RaycastRenderer.this.settingsPanel.exportResult(f, true);
+			} catch (Exception ex) {
+				RaycastRenderer.this.settingsPanel.exportResult(f, false);
+			}
+		}
+	}
+	
+	@Override
+	public void exportImage(File f) {
+		RaycastExportWorker worker = new RaycastExportWorker(f);
+		worker.execute();
 	}
 }

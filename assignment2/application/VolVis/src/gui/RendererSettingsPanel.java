@@ -4,7 +4,14 @@
  */
 package gui;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import volume.Volume;
+import volvis.ImageExportable;
 import volvis.RendererSettings;
 
 /**
@@ -13,18 +20,20 @@ import volvis.RendererSettings;
  */
 public class RendererSettingsPanel extends javax.swing.JPanel {
 	private RendererSettings settings;
+	private ImageExportable renderer;
 	
 	/**
 	 * Creates new form RendererSettingsPanel
 	 */
-	public RendererSettingsPanel(RendererSettings settings) {
+	public RendererSettingsPanel(RendererSettings settings, ImageExportable renderer) {
 		this.settings = settings;
+		this.renderer = renderer;
 		
 		initComponents();
 		
 		chkUseGradientOpacity.setSelected(this.settings.isUseGradient());
 		slFmin.setValue(this.settings.getFmin());
-		slFmin1.setValue(this.settings.getFirstMin());
+		slFfirst_min.setValue(this.settings.getFirstMin());
 		slFmax.setValue(this.settings.getFmax());
 		slOmin.setValue((int)(this.settings.getOmin() * 100));
 		slOmax.setValue((int)(this.settings.getOmax() * 100));
@@ -36,6 +45,14 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
 		slFmax.setMinimum(v.getMinimum());
 		slFmin.setMaximum(v.getMaximum());
 		slFmax.setMaximum(v.getMaximum());
+	}
+	
+	public void exportResult(File f, boolean result){
+		if(result){
+			lblExportResult.setText("Image saved to " + f.getPath());
+		}else{
+			lblExportResult.setText("Failed to save image");
+		}
 	}
 
 	/**
@@ -63,12 +80,17 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
         txtOmax = new javax.swing.JTextField();
         lblUseGradientOpacity = new javax.swing.JLabel();
         chkUseGradientOpacity = new javax.swing.JCheckBox();
+        lblFfirst_min = new javax.swing.JLabel();
+        slFfirst_min = new javax.swing.JSlider();
+        txtFfirst_min = new javax.swing.JTextField();
         lblFactor = new javax.swing.JLabel();
         slFactor = new javax.swing.JSlider();
         txtFactor = new javax.swing.JTextField();
-        txtFmin1 = new javax.swing.JTextField();
-        slFmin1 = new javax.swing.JSlider();
-        lblFmin1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        lblExport = new javax.swing.JLabel();
+        btnExport = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lblExportResult = new javax.swing.JTextArea();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -147,6 +169,20 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        lblFfirst_min.setText("First minimum value");
+
+        slFfirst_min.setMaximum(255);
+        slFfirst_min.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slFfirst_minStateChanged(evt);
+            }
+        });
+
+        txtFfirst_min.setEditable(false);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slFfirst_min, org.jdesktop.beansbinding.ELProperty.create("${value}"), txtFfirst_min, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
         lblFactor.setText("Factor");
 
         slFactor.setMaximum(1000);
@@ -183,12 +219,6 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(txtFmax, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOpacityLayout.createSequentialGroup()
-                        .addComponent(lblOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(slOmax, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtOmax, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOpacityLayout.createSequentialGroup()
                         .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblUseGradientOpacity, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                             .addComponent(lblFmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -200,6 +230,18 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                                 .addComponent(txtFmin, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(chkUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOpacityLayout.createSequentialGroup()
+                        .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblFfirst_min, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(slFfirst_min, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(slOmax, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtOmax, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                            .addComponent(txtFfirst_min)))
+                    .addGroup(pnlOpacityLayout.createSequentialGroup()
                         .addComponent(lblFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(slFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -210,7 +252,7 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
         pnlOpacityLayout.setVerticalGroup(
             pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlOpacityLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(chkUseGradientOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblUseGradientOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -234,27 +276,60 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                     .addComponent(slOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblOmax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtOmax, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(slFfirst_min, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblFfirst_min, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFfirst_min, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlOpacityLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(slFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtFactor, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(17, 17, 17))
         );
 
-        txtFmin1.setEditable(false);
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Export"));
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, slFmin1, org.jdesktop.beansbinding.ELProperty.create("${value}"), txtFmin1, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
+        lblExport.setText("Export high quality to PNG");
 
-        slFmin1.setMaximum(255);
-        slFmin1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                slFmin1StateChanged(evt);
+        btnExport.setText("Save");
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
             }
         });
 
-        lblFmin1.setText("Minimum value");
+        lblExportResult.setEditable(false);
+        lblExportResult.setColumns(20);
+        lblExportResult.setLineWrap(true);
+        lblExportResult.setRows(5);
+        jScrollPane1.setViewportView(lblExportResult);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnExport)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblExport, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -264,79 +339,91 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlOpacity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblFmin1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(slFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlOpacity, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(slFmin1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFmin1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void slFminStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFminStateChanged
-        this.settings.setFmin(((javax.swing.JSlider) evt.getSource()).getValue());
-    }//GEN-LAST:event_slFminStateChanged
-
-    private void slOminStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOminStateChanged
-        this.settings.setOmin(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
-    }//GEN-LAST:event_slOminStateChanged
-
-    private void slFmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFmaxStateChanged
-        this.settings.setFmax(((javax.swing.JSlider) evt.getSource()).getValue());
-    }//GEN-LAST:event_slFmaxStateChanged
-
-    private void slOmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOmaxStateChanged
-        this.settings.setOmax(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
-    }//GEN-LAST:event_slOmaxStateChanged
-
-    private void chkUseGradientOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chkUseGradientOpacityStateChanged
-        this.settings.setUseGradient(((javax.swing.JCheckBox) evt.getSource()).isSelected());
-    }//GEN-LAST:event_chkUseGradientOpacityStateChanged
-
-    private void slFmin1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFmin1StateChanged
-       this.settings.setFirstMin(((javax.swing.JSlider) evt.getSource()).getValue());
-    }//GEN-LAST:event_slFmin1StateChanged
+    private void slFfirst_minStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFfirst_minStateChanged
+        this.settings.setFirstMin(((javax.swing.JSlider) evt.getSource()).getValue());
+    }//GEN-LAST:event_slFfirst_minStateChanged
 
     private void slFactorStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFactorStateChanged
         this.settings.setFactor(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
     }//GEN-LAST:event_slFactorStateChanged
 
+    private void chkUseGradientOpacityStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chkUseGradientOpacityStateChanged
+        this.settings.setUseGradient(((javax.swing.JCheckBox) evt.getSource()).isSelected());
+    }//GEN-LAST:event_chkUseGradientOpacityStateChanged
+
+    private void slOmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOmaxStateChanged
+        this.settings.setOmax(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
+    }//GEN-LAST:event_slOmaxStateChanged
+
+    private void slFmaxStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFmaxStateChanged
+        this.settings.setFmax(((javax.swing.JSlider) evt.getSource()).getValue());
+    }//GEN-LAST:event_slFmaxStateChanged
+
+    private void slOminStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slOminStateChanged
+        this.settings.setOmin(((javax.swing.JSlider) evt.getSource()).getValue()/100.0);
+    }//GEN-LAST:event_slOminStateChanged
+
+    private void slFminStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slFminStateChanged
+        this.settings.setFmin(((javax.swing.JSlider) evt.getSource()).getValue());
+    }//GEN-LAST:event_slFminStateChanged
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Image", "png");
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(filter);
+        int ret = chooser.showSaveDialog(null);
+        if(ret == JFileChooser.APPROVE_OPTION){
+            File selected = chooser.getSelectedFile();
+			if(!selected.getAbsolutePath().endsWith(".png")){
+				selected = new File(selected + ".png");
+			}
+            this.renderer.exportImage(selected);
+            this.lblExportResult.setText("Exporting image...");
+        }
+    }//GEN-LAST:event_btnExportActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExport;
     private javax.swing.JCheckBox chkUseGradientOpacity;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblExport;
+    private javax.swing.JTextArea lblExportResult;
     private javax.swing.JLabel lblFactor;
+    private javax.swing.JLabel lblFfirst_min;
     private javax.swing.JLabel lblFmax;
     private javax.swing.JLabel lblFmin;
-    private javax.swing.JLabel lblFmin1;
     private javax.swing.JLabel lblOmax;
     private javax.swing.JLabel lblOmin;
     private javax.swing.JLabel lblUseGradientOpacity;
     private javax.swing.JPanel pnlOpacity;
     private javax.swing.JSlider slFactor;
+    private javax.swing.JSlider slFfirst_min;
     private javax.swing.JSlider slFmax;
     private javax.swing.JSlider slFmin;
-    private javax.swing.JSlider slFmin1;
     private javax.swing.JSlider slOmax;
     private javax.swing.JSlider slOmin;
     private javax.swing.JTextField txtFactor;
+    private javax.swing.JTextField txtFfirst_min;
     private javax.swing.JTextField txtFmax;
     private javax.swing.JTextField txtFmin;
-    private javax.swing.JTextField txtFmin1;
     private javax.swing.JTextField txtOmax;
     private javax.swing.JTextField txtOmin;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
