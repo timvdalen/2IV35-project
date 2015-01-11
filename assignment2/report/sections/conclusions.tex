@@ -1,1 +1,24 @@
 \section{Conclusions}\label{Sec:Con}
+Maximum intensity projection is useful when you are looking for some objects that are hidden.
+However the objects that are you looking for must have an high voxel value, otherwise you will not find them.
+We were looking for hidden objects in the backpack. 
+These objects had high voxel values, so this worked out really well.
+However we were also looking for the coins inside the pig.
+This did not work out, because the voxel values of the coins were too low. 
+Another problem with maximum intensity projection is that is does not display depth. \\
+The composite transfer function is useful when you want too see through semi-transparant layers. 
+The main advantages of the composite transfer function is that there is not much loss of information.
+You use all layers to generate the new image. 
+However the biggest problem of the composite transfer function is that you have to experiment with the settings of the transfer function.
+With the proper settings for the transfer function the composite transfer function really excels. \\
+The first technique did worked out pretty well. It is useful to easily find out how the surface looks like.
+It is also useful when you want to find object with an high voxel value. 
+However maximum intensity projection is better at finding an object with an high voxel value.
+And when you want to know how the surface looks like, there is no need to turn it in a volume file. \\
+Gradient based opacity weighting is useful when there are different kinds of materials with voxel valuse in other ranges.
+Then you can use gradient based opacity weighting to show only these materials.
+This turned out useful with the carp and the stent. 
+However it did not really work well with the coins in the pig, because they were in the same voxel value range.
+
+
+
