@@ -104,7 +104,7 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
-        pnlOpacity.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Gradient opacity settings"));
+        pnlOpacity.setBorder(javax.swing.BorderFactory.createTitledBorder("Gradient opacity settings"));
 
         lblFmin.setText("Minimum value");
 
@@ -298,7 +298,7 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                 .addGap(68, 68, 68))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Export"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Export"));
 
         lblExport.setText("Export high quality to PNG");
 
@@ -402,10 +402,8 @@ public class RendererSettingsPanel extends javax.swing.JPanel {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
-
-        jPanel3.getAccessibleContext().setAccessibleName("First");
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
