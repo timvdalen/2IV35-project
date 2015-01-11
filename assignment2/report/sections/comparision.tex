@@ -31,7 +31,13 @@ So we think that maximum intensity projection would be the best choice.
 		\includegraphics[width=\textwidth]{fig_comp_bp_slicer}
 		\caption{Rendered using the already implemented slicer method}
 	\end{subfigure}
-
+	\caption{A comparison of rendering \texttt{backpack small8.fld} with different rendering methods}
+	\label{fig:comp:bp}
+\end{figure}
+	
+\begin{figure}[H]
+	\ContinuedFloat
+	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{fig_comp_bp_ctfftb}
 		\caption{Rendered using the composite transfer function Front to Back}
@@ -77,7 +83,13 @@ The back to front method is more likely to show all coins, but might be harder t
 		\includegraphics[width=\textwidth]{fig_comp_big_ctfftb}
 		\caption{Rendered using the composite transfer function Front to Back}
 	\end{subfigure}
-
+	\caption{A comparison of rendering \texttt{big8.fld} with different rendering methods}
+	\label{fig:comp:big}
+\end{figure}
+	
+\begin{figure}[H]
+	\ContinuedFloat
+	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{fig_comp_big_ctfbtf}
 		\caption{Rendered using the composite transfer function Back to Front}
@@ -89,5 +101,67 @@ The back to front method is more likely to show all coins, but might be harder t
 	\end{subfigure}
 	
 	\caption{A comparison of rendering \texttt{big8.fld} with different rendering methods}
+	\label{fig:comp:big}
+\end{figure}	
+
+\subsection{Gradient-based opacity weighting}
+Using the gradient-based opacity weighting settings and the export function of our application, we created an animated GIF of the \texttt{carp8.fld} data set.
+By rendering at different settings (increasing the $f_{min}$ parameter), we were able to first hide all the soft flesh of the fish until only the bone remains.
+If we increase the minimum required density even more, we see that the smaller and softer bones start to disappear, until finally, the entire fish is gone.
+
+The rendered GIF file is included with this report (since the bones are rendered in white, it is recommended to watch this with a dark background), but it is also hosted online at \url{http://imgur.com/zRD7NEw}.
+Figure~\ref{fig:comp:carp} shows some frames of the animation.
+
+All renders were created with these constants: $f_{max}$ of 240, $o_{min}$ of $0.6$ and $o_{max}$ of $0.8$.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-010}
+		\caption{$f_{min}$ of 70}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-040}
+		\caption{$f_{min}$ of 100}
+	\end{subfigure}
+	
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-080}
+		\caption{$f_{min}$ of 140}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-100}
+		\caption{$f_{min}$ of 160}
+	\end{subfigure}
+	\caption{A comparison of rendering \texttt{carp8.fld} at different gradient-based opacity weighing settings}
+	\label{fig:comp:big}
+\end{figure}
+	
+\begin{figure}[H]
+	\ContinuedFloat
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-115}
+		\caption{$f_{min}$ of 175}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-130}
+		\caption{$f_{min}$ of 190}
+	\end{subfigure}
+	
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-150}
+		\caption{$f_{min}$ of 210}
+	\end{subfigure}
+	~%
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{vis-160}
+		\caption{$f_{min}$ of 220}
+	\end{subfigure}
+	
+	\caption{A comparison of rendering \texttt{carp8.fld} at different gradient-based opacity weighing settings}
 	\label{fig:comp:big}
 \end{figure}
