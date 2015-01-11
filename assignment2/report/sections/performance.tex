@@ -77,6 +77,7 @@ An example export created by our application is given in Figure~\ref{fig:perf:ex
 \end{figure}
 
 \subsection{Background rendering}
+\label{Sec:Perf:Background}
 While inspecting the given project skeleton, we noticed that the calculation of the image is done during OpenGL rendering.
 This means that the calculated image is always 'up to date' with the set parameters, but it is not really nessecary to calculate the image at that time.
 
