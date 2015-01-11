@@ -5,11 +5,6 @@ Volume rendering could be useful to display the content of the volume without lo
 This is already done at the airport with different techniques.
 The idea is to find dangerous items in the bag. 
 So scanning the volume is useful when we can see the content of the bag. 
-When we look at the images in \ref{fig:comp:bp}, we can see that some techinques excel at this and others do not. 
-We will first discuss which techniques are not really useful. 
-The slicer and composite transfer functions do not show all content of the bag.
-The both first do not display everything nicely, but the maximum intensity projection shows the  most useful content of the bag. 
-So we think that maximum intensity projection would be the best choice.
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
@@ -51,7 +46,19 @@ So we think that maximum intensity projection would be the best choice.
 	\caption{A comparison of rendering \texttt{backpack small8.fld} with different rendering methods}
 	\label{fig:comp:bp}
 \end{figure}
-
+When we look at the images in \ref{fig:comp:bp}, we can see that some techinques excel at this and others do not. 
+We will first discuss which techniques are not really useful. 
+The slicer and composite transfer functions do not show all content of the bag.
+The both first do not display everything nicely, but the maximum intensity projection shows the  most useful content of the bag. 
+So we think that maximum intensity projection would be the best choice with the standard transfer function.
+However we can adjust the transfer function to make the composite transfer function more useful.
+As you can see in \ref{fig:comp:backpak} we can also use the composite transfer function for this.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.45\textwidth]{backpack}
+		\caption{Rendered backpack with the composite transfer function with a custom transfer function}
+	\label{fig:comp:backpak}
+\end{figure}
 \subsection{Pig}
 The \texttt{pigl8.fld} file contains the volume of a pig money-box with some coins in it.
 Volume rendering could be useful to display to know how much money is in the pig.
@@ -103,7 +110,14 @@ The back to front method is more likely to show all coins, but might be harder t
 	\caption{A comparison of rendering \texttt{big8.fld} with different rendering methods}
 	\label{fig:comp:big}
 \end{figure}	
-
+However we can adjust the transfer function to make the composite transfer function more useful.
+As you can see in \ref{fig:comp:biggie} we can make the coins better visible.
+\begin{figure}[H]
+	\centering
+		\includegraphics[width=0.45\textwidth]{big}
+		\caption{Rendered big with the composite transfer function with a custom transfer function}
+	\label{fig:comp:biggie}
+\end{figure}
 \subsection{Gradient-based opacity weighting}
 Using the gradient-based opacity weighting settings and the export function of our application, we created an animated GIF of the \texttt{carp8.fld} data set.
 By rendering at different settings (increasing the $f_{min}$ parameter), we were able to first hide all the soft flesh of the fish until only the bone remains.
