@@ -1,0 +1,75 @@
+\section{Design}\label{Sec:Des}
+	\subsection{Visualization Techniques}
+	We have three attributes that we want to display, which are:
+	\begin{itemize}
+	\item \textbf{Year}\\
+	The year in which the movie was released. This is a ordered key attribute.
+	\item \textbf{Genre} \\
+	The genre of the movie, which is a categorical key attribute. 
+	\item \textbf{Total} \\
+	The number of movies produced in that year for that genre. 
+	This is a categorical key attribute.
+	\end{itemize}
+	So a streamgraph would be ideal for this. 
+	However there are still some issues with streamgraphs. 
+	As Lee Byron and Martin Wattenberg stated in the conclusion of their paper: 
+	\emph{'An important purpose of this paper is to spotlight stacked graphs as an interesting object of study. 
+	There are many unresolved questions in their design and evaluation.'}
+	This means we have to analyse the streamgraph well. 
+	Then we can draw conclusions for which tasks it worked well and for which it did not. 
+	TODO reference maken: Stacked Graphs – Geometry and Aesthetics, Lee Byron and Martin Wattenberg
+
+	Also a lot of questions in the tasks are about individual genres. 
+	But instead of the total number of movies in that movie we want to look at some other values.
+	We want to see the percentage of movies from the total number of movies.
+	If we just take the total number of movies, we will see all movies increase in produced movies. 
+	This is because nowadays there is a bigger total of movies.
+	
+	We also want to look at the average rating, because the rating is a interesting way to find out how people perceived the movies. 
+	Both the average rating and percentage of the total movies for a genre over time are interesting to visualize. 
+	
+	This means we have two attributes we want to visualize: 
+	\begin{itemize}
+	\item \textbf{Year}\\
+	The year in which the movie was released. This is a ordered key attribute.
+	\item \textbf{Rating/Percentage} \\
+	The percentage of movies of that genre from the the total movies produced in that year and the average rating for that movie produced in hat year.
+	They are both categorical key attribute.
+	\end{itemize}
+	So we decided to make two line graphs. 
+	One for the rating and one for the percentage of the total number of movies.
+	
+	We also decided to add a bar chart that shows the distribution of the movies in that year. 
+	We think this might be useful while analysing the data to look at the distrubition compared to other genres. 
+	
+	\subsection{Interaction}
+	\textbf{Select}\\
+	\emph{Click}\\
+	Go to the line charts for that genre and the bar chart for that year. \\
+	\emph{Hover}\\
+	Show information for that movie for that genre for that year. \\
+	\emph{Highlight}\\
+	Change visual encoding for selection targets\\ \\
+	\textbf{Change viewpoint }\\
+	\emph{Zoom}\\
+	Zoom in to inspect some years closer. 
+	Use the mouse to move left or right on the graph. \\
+
+	\subsection{Data Representation}
+	We decided to preprocess the data. We did this to filter movies out of the list and to save time.
+	Since we mainly focus on the genre of movies we removed all movies without genre.
+	We also use the release data, so we filtered the movies out that did not have a release date.
+	And finally we removed all movies that did not have an IMDb rating. \\
+	Since we mainly look at the data at a certain year, we decided to already compute the most used attributes for that year.
+	We decided to compute the following attributes for each year for each genre:
+	\begin{itemize}
+	\item \textbf{Total}\\
+	The number of movies produced in that year for that genre.
+	\item \textbf{Rating} \\
+	The average rating for that movie produced in hat year.
+	\item \textbf{Percentage} \\
+	The percentage of movies of that genre from the the total movies produced in that year.
+	\end{itemize}
+	These three attributes take a lot of time to compute, while they are all always the same for that year. 
+
+	

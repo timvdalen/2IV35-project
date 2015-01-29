@@ -1,0 +1,67 @@
+\section{Implementation}\label{Sec:Imp}
+
+	Our visualization is implemented for the web platform.
+	We use the following technologies:
+
+	\begin{itemize}
+		\item HTML (spec v. 5)
+		\item CSS (spec v. 3)
+		\item SVG
+	\end{itemize}
+
+	In order to work more efficiently, we used the following libraries:
+
+	\begin{description}
+		\item[D3.js] to generate the SVG graphs
+		\item[jQuery] to easily manipulate non-graph DOM elements
+		\item[Bootstrap] to rapidly develop a minimal interface
+		\item[Bootstrap switch] to add user-friendly switches for settings
+	\end{description}
+
+	\subsection{Running}
+		Due to security policies in most browsers, the best way to run the application is to start a webserver from the \texttt{application} directory.
+		For instance, on a system with Python installed, you can do:
+
+		\begin{lstlisting}[language=bash]
+$ python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+# Navigate to http://localhost:8000/ in a browser
+		\end{lstlisting}
+
+		For your convenience, we are also hosting the latest version of this application on \url{http://three.2IV35.timvdalen.nl/}.
+
+		\subsubsection{Target}
+			Due to time constraints and the fact that we wanted to use modern technologies, we were not able to guarantee correctness of the application in all browsers.
+			While the application might work fine on other platforms, we recommend using a modern browser based on the WebKit or Blink rendering engines, such as Chrome, Chromium, Safari or later versions of Opera.
+
+	\subsection{Components}
+		Our application is built up from Object Oriented JavaScript modules.
+		All modules are documented using Doxygen-compatiple documentation.
+
+		The modules all have their own scope and expose certain functionality (methods or objects) to the main scope.
+		This way, the modules can use each other by referencing these exported methods and objects from their referenced to the main scope (which is given to each module as an argument).
+		In a larger project, we would have used dependency injection instead of polluting the main scope with application-specific classes and methods.
+		However, since we only have six modules, we chose to let them expose functionality to the main scope instead of adding the overhead of dependency injection.
+
+		We have the following modules:
+
+		\begin{itemize}
+			\item Data
+				\begin{itemize}
+					\item Municipality
+					\item Province
+				\end{itemize}
+			\item Helpers
+				\begin{itemize}
+					\item Settings
+					\item Filter
+				\end{itemize}
+			\item Graph
+				\begin{itemize}
+					\item Main
+					\item DetailView
+				\end{itemize}
+		\end{itemize}
+
+		
+
